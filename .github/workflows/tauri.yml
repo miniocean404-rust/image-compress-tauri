@@ -2,21 +2,21 @@ name: "publish"
 
 on:
   push:
-    branches: [ master ]
+    branches: [master]
     # tags:
     #   - 'v*'
     paths-ignore:
-      - '.idea/**'
-      - '.gitattributes'
-      - '.github/**.json'
-      - '.gitignore'
-      - '.gitmodules'
-      - '**.md'
-      - '**/*.txt'
-      - '**/*.png'
-      - '**/*.jpg'
-      - 'LICENSE'
-      - 'NOTICE'
+      - ".idea/**"
+      - ".gitattributes"
+      - ".github/**.json"
+      - ".gitignore"
+      - ".gitmodules"
+      - "**.md"
+      - "**/*.txt"
+      - "**/*.png"
+      - "**/*.jpg"
+      - "LICENSE"
+      - "NOTICE"
   workflow_dispatch:
 
 jobs:
@@ -29,7 +29,7 @@ jobs:
 
     steps:
       - name: 签出代码
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: 设置 Node 环境
         uses: actions/setup-node@v3
@@ -67,7 +67,7 @@ jobs:
     runs-on: ${{ matrix.platform }}
     steps:
       - name: 签出代码
-      - uses: actions/checkout@v3
+        uses: actions/checkout@v3
 
       - name: 安装 pnpm
         uses: pnpm/action-setup@v2
@@ -92,7 +92,7 @@ jobs:
         run: pnpm install
 
       - name: 构建 Tauri
-      - uses: tauri-apps/tauri-action@v0.3
+        uses: tauri-apps/tauri-action@v0.3
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
@@ -107,7 +107,6 @@ jobs:
     needs: [create-release, build-tauri]
 
     steps:
-
       - name: publish release
         id: publish-release
         uses: actions/github-script@v6
@@ -126,7 +125,7 @@ jobs:
       # 生成静态资源并将其推送到 github pages
   updater:
     runs-on: ubuntu-latest
-    needs: [create-release, build-tauri,publish-release]
+    needs: [create-release, build-tauri, publish-release]
 
     steps:
       - name: 设置 Node 环境
