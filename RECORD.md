@@ -2,6 +2,12 @@
 
 https://juejin.cn/post/7067342513920540686#heading-8
 
+<!-- 获取文件进度条 -->
+
+https://juejin.cn/post/7212819399115489335
+
+https://juejin.cn/post/7093164755275218981
+
 ## 官方文档
 
 tauri.config.json 文档：https://tauri.app/zh-cn/v1/api/config/
