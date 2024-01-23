@@ -3,6 +3,7 @@
 
 use image_compress_tauri::{
     __cmd__close_splashscreen, __cmd__get_drag_files, __cmd__greet,
+    utils::log::tracing::init_tracing,
     window::command::{
         custom::{close_splashscreen, greet},
         drag::get_drag_files,
@@ -11,6 +12,8 @@ use image_compress_tauri::{
 };
 
 fn main() {
+    let _guard = init_tracing();
+
     tauri::Builder::default()
         // 注册命令、方法
         .invoke_handler(tauri::generate_handler![greet, close_splashscreen, get_drag_files])

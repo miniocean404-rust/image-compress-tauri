@@ -8,10 +8,22 @@
   },
   "package": {
     "productName": "image-compress-tauri",
-    "version": "0.0.2"
+    "version": "0.0.3"
   },
   "tauri": {
     "allowlist": {
+      "fs": {
+        "all": true
+      },
+      "clipboard": {
+        "all": true
+      },
+      "notification": {
+        "all": true
+      },
+      "globalShortcut": {
+        "all": true
+      },
       "all": false,
       "shell": {
         "all": false,

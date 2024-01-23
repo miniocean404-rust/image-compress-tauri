@@ -7,8 +7,4 @@ pub struct DragFiles {
 }
 
 #[tauri::command]
-pub fn get_drag_files(drag: DragFiles) {
-    let DragFiles { files, .. } = drag;
-    print!("get_drag_files: {:?}", files);
-    // info!("get_drag_files: {:?}", drag.files);
-}
+pub fn get_drag_files(files: Vec<String>) {}
