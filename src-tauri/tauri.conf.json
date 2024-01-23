@@ -47,6 +47,7 @@
     },
     "windows": [
       {
+        "center": true,
         "width": 400,
         "height": 300,
         "decorations": false,
@@ -54,9 +55,11 @@
         "label": "splash"
       },
       {
+        "title": "图片压缩",
+        "center": true,
         "fullscreen": false,
+        "fileDropEnabled": true,
         "resizable": true,
-        "title": "image-compress-tauri",
         "width": 800,
         "height": 600,
         "visible": false
