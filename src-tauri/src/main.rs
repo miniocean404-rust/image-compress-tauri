@@ -3,8 +3,8 @@
 
 use image_compress_tauri::{
     __cmd__close_splashscreen, __cmd__greet,
-    command::custom::{close_splashscreen, greet},
-    menu::{entry::get_menu, event::menu_event},
+    window::command::custom::{close_splashscreen, greet},
+    window::menu::{event::menu_event, index::get_menu},
 };
 
 fn main() {
@@ -16,5 +16,5 @@ fn main() {
         // 监听自定义菜单事件
         .on_menu_event(menu_event())
         .run(tauri::generate_context!())
-        .expect("error while running tauri application");
+        .expect("运行 tauri 应用程序时出错");
 }
