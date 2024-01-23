@@ -10,7 +10,8 @@ function Home() {
 
   useEffect(() => {
     listen("tauri://file-drop", async (event) => {
-      console.log(event);
+      console.log(event.payload);
+      await invoke("get_drag_files", { files: event.payload });
     });
   }, []);
 
