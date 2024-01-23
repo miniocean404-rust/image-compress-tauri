@@ -8,13 +8,17 @@ use image_compress_tauri::{
         custom::{close_splashscreen, greet},
         drag::get_drag_files,
     },
-    window::menu::{event::menu_event, index::get_menu},
+    window::{
+        menu::{event::menu_event, index::get_menu},
+        tray::index::create_sys_tray,
+    },
 };
 
 fn main() {
     let _guard = init_tracing();
 
     tauri::Builder::default()
+        .system_tray(create_sys_tray())
         // 注册命令、方法
         .invoke_handler(tauri::generate_handler![greet, close_splashscreen, get_drag_files])
         // 添加菜单

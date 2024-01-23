@@ -12,6 +12,7 @@ https://juejin.cn/post/7093164755275218981
 
 tauri.config.json 文档：https://tauri.app/zh-cn/v1/api/config/
 tauri 前端 Api: https://tauri.app/zh-cn/v1/api/js/
+自定义窗口：https://tauri.app/zh-cn/v1/guides/features/window-customization
 
 ## 打包
 
