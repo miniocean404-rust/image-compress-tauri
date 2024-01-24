@@ -10,8 +10,10 @@ const require = createRequire(import.meta.url);
 
 async function release() {
   const flag = process.argv[2] ?? "patch";
-  const packageJson = require("../package.json");
-  let [major, minor, patch] = packageJson.version.split(".").map(Number);
+  const pkg = require("../package.json");
+  const tauriPkg = require("../src-tauri/tauri.conf.json");
+
+  let [major, minor, patch] = pkg.version.split(".").map(Number);
 
   if (flag === "major") {
     // 主版本
@@ -26,18 +28,20 @@ async function release() {
     // 补丁版本
     patch += 1;
   } else {
-    console.log(`无效的标志 "${flag}"`);
+    console.log(`无效的版本标志 "${flag}"`);
     process.exit(1);
   }
 
+  const nextTag = `v${nextVersion}`;
+  // await updatelog(nextTag, "release");
+
   const nextVersion = `${major}.${minor}.${patch}`;
   packageJson.version = nextVersion;
-
-  const nextTag = `v${nextVersion}`;
-  await updatelog(nextTag, "release");
+  tauriPkg.package.version = nextVersion;
 
   // 将新版本写入 package.json 文件
   fs.writeFileSync("./package.json", JSON.stringify(packageJson, null, 2));
+  fs.writeFileSync("./src-tauri/tauri.conf.json", JSON.stringify(tauriPkg, null, 2));
 
   // 提交修改的文件，打 tag 标签（tag 标签是为了触发 github action 工作流）并推送到远程
   execSync("git add ./package.json ./UPDATE_LOG.md");
