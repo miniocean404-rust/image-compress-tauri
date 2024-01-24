@@ -11,9 +11,8 @@
     "vite:dev": "vite",
     "vite:build": "tsc && vite build",
     "vite:preview": "vite preview",
-    "rsw": "rsw",
-    "updater": "node scripts/updater.mjs",
-    "release": "node scripts/release.mjs"
+    "release": "node scripts/release.mjs",
+    "updater": "node scripts/updater.mjs"
   },
   "dependencies": {
     "@tauri-apps/api": "^1.5.3",
