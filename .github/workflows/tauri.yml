@@ -95,6 +95,7 @@ jobs:
       - name: 安装前端依赖
         run: pnpm install
 
+      # 会自动生成补丁文件 latest.json
       - name: 构建 Tauri
         uses: tauri-apps/tauri-action@v0
         env:

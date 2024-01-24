@@ -11,7 +11,7 @@ const token = process.env.GITHUB_TOKEN;
 updater().catch(console.error);
 
 async function updater() {
-  console.log(token);
+  console.log("GITHUB_TOKEN", token);
   if (!token) {
     console.log("GITHUB_TOKEN 是必须的");
     process.exit(1);
@@ -62,6 +62,8 @@ async function updater() {
 
   await Promise.allSettled(
     latestRelease.assets.map(async (asset) => {
+      // /.msi.zip/ /.app.tar.gz/ /.AppImage.tar.gz/ 就是补丁文件
+
       // windows
       updateData = await setAsset(asset, /.msi.zip/, ["win64", "windows-x86_64"], updateData);
 
