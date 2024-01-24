@@ -52,7 +52,7 @@ jobs:
               repo: context.repo.repo,
               tag_name: `v${process.env.PACKAGE_VERSION}`,
               name: `桌面 App v${process.env.PACKAGE_VERSION}`,
-              body: '看一下下载和安装这个应用程序的资源.',
+              body: '图片压缩程序',
               draft: true,
               prerelease: false
             })

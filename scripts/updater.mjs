@@ -6,12 +6,14 @@ import axios from "axios";
 
 import updatelog from "./updatelog.mjs";
 
-const token = process.env.GITHUB_TOKEN;
+const token = process.env.GITHUB_TOKEN || "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";
+
+// 需要 GITHUB_REPOSITORY 变量
+process.env.GITHUB_REPOSITORY = `miniocean404-rust/image-compress-tauri`;
 
 updater().catch(console.error);
 
 async function updater() {
-  console.log("GITHUB_TOKEN", token);
   if (!token) {
     console.log("GITHUB_TOKEN 是必须的");
     process.exit(1);
@@ -68,10 +70,10 @@ async function updater() {
       updateData = await setAsset(asset, /.msi.zip/, ["win64", "windows-x86_64"], updateData);
 
       // darwin
-      updateData = await setAsset(asset, /.app.tar.gz/, ["darwin", "darwin-x86_64", "darwin-aarch64"]);
+      updateData = await setAsset(asset, /.app.tar.gz/, ["darwin", "darwin-x86_64", "darwin-aarch64"], updateData);
 
       // linux
-      updateData = await setAsset(asset, /.AppImage.tar.gz/, ["linux", "linux-x86_64"]);
+      updateData = await setAsset(asset, /.AppImage.tar.gz/, ["linux", "linux-x86_64"], updateData);
     }),
   );
 
@@ -82,18 +84,21 @@ async function updater() {
 }
 
 async function setAsset(asset, reg, platforms, updateData) {
-  let sig = "";
-  if (/.sig$/.test(asset.name)) sig = await getSignature(asset.browser_download_url);
+  if (/.sig$/.test(asset.name)) {
+    const sig = await getSignature(asset.browser_download_url);
 
-  platforms.forEach((platform) => {
-    if (reg.test(asset.name)) {
-      // 设置平台签名，检测应用更新需要验证签名
-      if (sig) return (updateData.platforms[platform].signature = sig);
+    // 设置签名
+    platforms.forEach((platform) => {
+      if (sig && reg.test(asset.name)) updateData.platforms[platform].signature = sig;
+    });
+  }
 
-      // 设置下载链接
-      updateData.platforms[platform].url = asset.browser_download_url;
-    }
-  });
+  // 设置软件下载链接
+  if (reg.test(asset.name) && !asset.name.endsWith("sig")) {
+    platforms.forEach((platform) => (updateData.platforms[platform].url = asset.browser_download_url));
+  }
+
+  return updateData;
 }
 
 // 获取签名内容
