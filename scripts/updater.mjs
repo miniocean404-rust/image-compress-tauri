@@ -10,7 +10,7 @@ const token = process.env.GITHUB_TOKEN;
 
 async function updater() {
   if (!token) {
-    console.log("GITHUB_TOKEN is required");
+    console.log("GITHUB_TOKEN 是必须的");
     process.exit(1);
   }
 
@@ -91,7 +91,7 @@ async function updater() {
 
   // 将数据写入文件
   fs.writeFileSync("./updater/install.json", JSON.stringify(updateData, null, 2));
-  console.log("Generate updater/install.json");
+  console.log("生成 updater/install.json");
 }
 
 updater().catch(console.error);

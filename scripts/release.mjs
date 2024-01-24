@@ -11,26 +11,26 @@ const require = createRequire(import.meta.url);
 async function release() {
   const flag = process.argv[2] ?? "patch";
   const packageJson = require("../package.json");
-  let [a, b, c] = packageJson.version.split(".").map(Number);
+  let [major, minor, patch] = packageJson.version.split(".").map(Number);
 
   if (flag === "major") {
     // 主版本
-    a += 1;
-    b = 0;
-    c = 0;
+    major += 1;
+    minor = 0;
+    patch = 0;
   } else if (flag === "minor") {
     // 次版本
-    b += 1;
-    c = 0;
+    minor += 1;
+    patch = 0;
   } else if (flag === "patch") {
     // 补丁版本
-    c += 1;
+    patch += 1;
   } else {
     console.log(`Invalid flag "${flag}"`);
     process.exit(1);
   }
 
-  const nextVersion = `${a}.${b}.${c}`;
+  const nextVersion = `${major}.${minor}.${patch}`;
   packageJson.version = nextVersion;
 
   const nextTag = `v${nextVersion}`;
@@ -45,7 +45,7 @@ async function release() {
   execSync(`git tag -a v${nextVersion} -m "v${nextVersion}"`);
   execSync(`git push`);
   execSync(`git push origin v${nextVersion}`);
-  console.log(`Publish Successfully...`);
+  console.log(`发布成功...`);
 }
 
 release().catch(console.error);

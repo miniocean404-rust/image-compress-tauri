@@ -11,7 +11,7 @@ export default function updatelog(tag, type = "updater") {
   const file = path.join(process.cwd(), UPDATE_LOG);
 
   if (!fs.existsSync(file)) {
-    console.log("Could not found UPDATE_LOG.md");
+    console.log("不能找到文件 UPDATE_LOG.md");
     process.exit(1);
   }
 
