@@ -26,7 +26,7 @@ async function release() {
     // 补丁版本
     patch += 1;
   } else {
-    console.log(`Invalid flag "${flag}"`);
+    console.log(`无效的标志 "${flag}"`);
     process.exit(1);
   }
 
