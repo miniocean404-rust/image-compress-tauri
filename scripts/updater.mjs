@@ -6,10 +6,12 @@ import axios from "axios";
 
 import updatelog from "./updatelog.mjs";
 
-const token = process.env.GITHUB_TOKEN || "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";
+// 如需测试需要去 github -> settings -> Developer Settings -> Personal access tokens -> Tokens 中生成一个 token
+const token = process.env.GITHUB_TOKEN;
 
-// 需要 GITHUB_REPOSITORY 变量
-process.env.GITHUB_REPOSITORY = `miniocean404-rust/image-compress-tauri`;
+// @actions/github 中的 context 需要 GITHUB_REPOSITORY 环境变量 例如：miniocean404-rust/image-compress-tauri
+// 但是 github action 工作流中自带，如需测试需要手动设置
+process.env.GITHUB_REPOSITORY;
 
 updater().catch(console.error);
 

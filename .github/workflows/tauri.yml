@@ -157,6 +157,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v3
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          # 要发布到 github page 的根目录的文件夹
           publish_dir: ./updater
           # 允许您仅使用最新的提交来创建发布分支
           force_orphan: true
