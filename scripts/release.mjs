@@ -44,12 +44,14 @@ async function release() {
   fs.writeFileSync("./src-tauri/tauri.conf.json", JSON.stringify(tauriPkg, null, 2));
 
   const gitMessage = execSync("git log --pretty=format:%s HEAD -1", { encoding: "utf-8" });
+  const gitBranch = execSync("git rev-parse --abbrev-ref HEAD", { encoding: "utf-8" });
+  const gitHash = execSync("git rev-parse --verify --short HEAD", { encoding: "utf-8" });
 
   // 提交修改的文件，打 tag 标签（tag 标签是为了触发 github action 工作流）并推送到远程
   execSync("git add ./package.json ./UPDATE_LOG.md");
   execSync("git add .");
   execSync(`git commit -m "version: v${nextVersion}"`);
-  execSync(`git tag -a v${nextVersion} -m "v${gitMessage}"`);
+  execSync(`git tag -a v${nextVersion} -m "hash:${gitHash} branch:${gitBranch} message:${gitMessage}"`);
   execSync(`git push`);
   execSync(`git push origin v${nextVersion}`);
   console.log(`发布成功...`);
