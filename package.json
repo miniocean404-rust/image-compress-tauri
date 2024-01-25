@@ -7,7 +7,7 @@
     "start": "tauri dev",
     "build:debug": "tauri build --debug",
     "build:release": "tauri build",
-    "output:icon": "tauri icon xx.png -o dist",
+    "output:icon": "tauri icon fire.png -o src-tauri/icons",
     "vite:dev": "vite",
     "vite:build": "tsc && vite build",
     "vite:preview": "vite preview",
