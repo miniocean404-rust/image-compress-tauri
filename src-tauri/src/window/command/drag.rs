@@ -15,6 +15,7 @@ pub fn get_drag_files(files: Vec<String>) {
         if let Ok(real_path) = path.canonicalize() {
             info!("get_drag_files: {:?}", real_path);
         } else {
+            todo!()
         }
     });
 }
