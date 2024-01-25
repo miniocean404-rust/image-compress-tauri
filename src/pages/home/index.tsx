@@ -2,10 +2,10 @@ import styles from "./index.module.scss";
 import { useEffect, useState } from "react";
 import { invoke } from "@tauri-apps/api/tauri";
 
-import { listen } from "@tauri-apps/api/event";
-import { BaseDirectory, readDir } from "@tauri-apps/api/fs";
+import { emit, listen } from "@tauri-apps/api/event";
 import { readText } from "@tauri-apps/api/clipboard";
 import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/api/notification";
+import { WebviewWindow, appWindow } from "@tauri-apps/api/window";
 
 function Home() {
   const [greetMsg, setGreetMsg] = useState("");
@@ -24,7 +24,24 @@ function Home() {
     });
   };
 
-  const sendMessage = async () => {
+  const handleGlobalEvent = async () => {
+    const unlisten = await listen("click", (event) => {
+      console.log(event);
+    });
+
+    emit("click", {
+      theMessage: "Tauri is awesome!",
+    });
+  };
+
+  const handleWindowEvent = () => {
+    appWindow.emit("event", { message: "Tauri is awesome!" });
+
+    const webview = new WebviewWindow("window");
+    webview.emit("event");
+  };
+
+  const handleSendNotification = async () => {
     let permissionGranted = await isPermissionGranted();
     if (!permissionGranted) {
       const permission = await requestPermission();
@@ -36,12 +53,9 @@ function Home() {
     }
   };
 
-  async function greet() {
+  async function readClipboard() {
     const clipboardText = await readText();
     console.log(clipboardText);
-
-    // Learn more about Tauri commands at https://tauri.app/v1/guides/features/command
-    setGreetMsg(await invoke("greet", { name }));
   }
 
   return (
@@ -51,14 +65,16 @@ function Home() {
         className='row'
         onSubmit={(e) => {
           e.preventDefault();
-          greet();
+          readClipboard();
         }}
       >
         <input id='greet-input' onChange={(e) => setName(e.currentTarget.value)} placeholder='Enter a name...' />
         <button type='submit'>Greet</button>
       </form>
       <p>{greetMsg}</p>
-      <button onClick={sendMessage}>发送通知</button>
+      <button onClick={handleSendNotification}>发送通知</button>
+      <button onClick={handleGlobalEvent}>全局事件</button>
+      <button onClick={handleWindowEvent}>特定于窗口的事件</button>
     </div>
   );
 }
