@@ -6,6 +6,7 @@ import NotFound from "@/pages/404";
 import ErrorPage from "@/pages/error";
 
 const Home = lazy(() => import("@/pages/home/index"));
+import Splash from "@/pages/splash/index";
 
 type BrowserRouterType = ReturnType<typeof createBrowserRouter>;
 
@@ -19,6 +20,10 @@ const routes: RouteObject[] = [
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/splash",
+        element: <Splash />,
       },
     ],
   },

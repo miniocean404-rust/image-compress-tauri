@@ -8,11 +8,28 @@ https://juejin.cn/post/7212819399115489335
 
 https://juejin.cn/post/7093164755275218981
 
-## 官方文档
+### 官方文档
 
 tauri.config.json 文档：https://tauri.app/zh-cn/v1/api/config/
 tauri 前端 Api: https://tauri.app/zh-cn/v1/api/js/
 自定义窗口：https://tauri.app/zh-cn/v1/guides/features/window-customization
+
+## 自定义的窗口
+
+1. 可以是静态资源下的文件路径 例如：public 文件夹下的`index.html`
+2. 自定义的窗口可以是 url 的 path 路径 例如：splash
+   下方的配置就是 react 页面中的 pages 下的 splash 文件
+
+```json
+{
+    "center": true,
+    "width": 800,
+    "height": 600,
+    "decorations": false,
+    "url": "splash",
+    "label": "splash"
+},
+```
 
 ## 打包
 
