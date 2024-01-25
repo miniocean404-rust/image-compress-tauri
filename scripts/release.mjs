@@ -55,4 +55,4 @@ async function release() {
   console.log(`发布成功...`);
 }
 
-// release().catch(console.error);
+release().catch(console.error);
