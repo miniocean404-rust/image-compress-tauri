@@ -9,7 +9,6 @@ import { WebviewWindow, appWindow } from "@tauri-apps/api/window";
 
 function Home() {
   const [greetMsg, setGreetMsg] = useState("");
-  const [name, setName] = useState("");
 
   useEffect(() => {
     init();
@@ -43,14 +42,14 @@ function Home() {
 
   const handleSendNotification = async () => {
     let permissionGranted = await isPermissionGranted();
+
     if (!permissionGranted) {
       const permission = await requestPermission();
       permissionGranted = permission === "granted";
+      return;
     }
 
-    if (permissionGranted) {
-      sendNotification({ title: "TAURI", body: "Tauri is awesome!", icon: "" });
-    }
+    await sendNotification({ title: "TAURI", body: "Tauri is awesome!" });
   };
 
   async function readClipboard() {
@@ -59,19 +58,8 @@ function Home() {
   }
 
   return (
-    <div className={styles.box} style={{backgroundColor:"red"}}>
-      {" "}
-      <form
-        className='row'
-        onSubmit={(e) => {
-          e.preventDefault();
-          readClipboard();
-        }}
-      >
-        <input id='greet-input' onChange={(e) => setName(e.currentTarget.value)} placeholder='Enter a name...' />
-        <button type='submit'>Greet</button>
-      </form>
-      <p>{greetMsg}</p>
+    <div className={styles.box}>
+      <button onClick={readClipboard}>读取剪贴板</button>
       <button onClick={handleSendNotification}>发送通知</button>
       <button onClick={handleGlobalEvent}>全局事件</button>
       <button onClick={handleWindowEvent}>特定于窗口的事件</button>
