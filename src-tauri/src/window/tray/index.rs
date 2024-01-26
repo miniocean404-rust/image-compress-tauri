@@ -22,13 +22,13 @@ pub fn system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
 
         match event {
             SystemTrayEvent::LeftClick { position: _, size: _, .. } => {
-                if (cfg!(target_os = "windows")) {
-                    if !window.is_visible()? {
-                        window.show()?;
-                        window.set_focus()?;
-                    } else {
-                        window.hide()?;
-                    }
+                if !window.is_visible()? {
+                    window.show()?;
+                    window.set_focus()?;
+                }
+
+                if window.is_visible()? && cfg!(target_os = "windows") {
+                    window.hide()?;
                 }
 
                 println!("左键点击了系统托盘");
