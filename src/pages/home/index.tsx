@@ -59,7 +59,7 @@ function Home() {
   }
 
   return (
-    <div className={styles.box}>
+    <div className={styles.box} style={{backgroundColor:"red"}}>
       {" "}
       <form
         className='row'

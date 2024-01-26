@@ -3,7 +3,6 @@
 
 use std::error::Error;
 
-use anyhow::Result;
 use image_compress_tauri::{
     __cmd__close_splashscreen, __cmd__get_drag_files,
     utils::log::tracing::init_tracing,
