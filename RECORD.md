@@ -1,18 +1,17 @@
 ## 学习文章地址
 
-https://juejin.cn/post/7067342513920540686#heading-8
+- splash:https://juejin.cn/post/7067342513920540686#heading-8
+- 游戏登录器（进度条）：https://juejin.cn/post/7212819399115489335
+- todo demo: https://juejin.cn/post/7093164755275218981
+- 效率小工具：https://juejin.cn/post/7194780452106797117?searchId=202401262153271E54F50BC6C4D84DB7CE
 
-<!-- 获取文件进度条 -->
-
-https://juejin.cn/post/7212819399115489335
-
-https://juejin.cn/post/7093164755275218981
-
-### 官方文档
+# 官方文档
 
 tauri.config.json 文档：https://tauri.app/zh-cn/v1/api/config/
 tauri 前端 Api: https://tauri.app/zh-cn/v1/api/js/
 自定义窗口：https://tauri.app/zh-cn/v1/guides/features/window-customization
+
+# tauri.config.json
 
 ## 自定义的窗口
 

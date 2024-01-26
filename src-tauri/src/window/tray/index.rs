@@ -27,13 +27,13 @@ pub fn system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
         match event {
             SystemTrayEvent::LeftClick { position: _, size: _, .. } => {
                 if cfg!(target_os = "windows") {
+                    if window.is_visible()? {
+                        window.hide()?;
+                    }
+
                     if !window.is_visible()? || !window.is_focused()? {
                         window.show()?;
                         window.set_focus()?;
-                    }
-
-                    if window.is_visible()? {
-                        window.hide()?;
                     }
                 }
 

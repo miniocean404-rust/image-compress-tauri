@@ -188,7 +188,8 @@ xmp {
 }
 
 html,
-body {
+body,
+#root {
   // electron 无边框窗口拖拽
   -webkit-app-region: drag;
   user-select: none;
