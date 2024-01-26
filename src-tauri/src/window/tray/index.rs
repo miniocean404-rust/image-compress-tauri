@@ -5,13 +5,17 @@ use tauri::{AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, Sys
 use crate::constant::error::TauriError;
 
 pub fn create_sys_tray() -> SystemTray {
+    let show = CustomMenuItem::new("show".to_string(), "显示");
     let quit = CustomMenuItem::new("quit".to_string(), "退出");
     let hide = CustomMenuItem::new("hide".to_string(), "隐藏");
 
-    let tray_menu = SystemTrayMenu::new()
-        .add_item(hide)
-        .add_native_item(SystemTrayMenuItem::Separator)
-        .add_item(quit);
+    let mut tray_menu = SystemTrayMenu::new();
+
+    if cfg!(target_os = "macos") {
+        tray_menu = tray_menu.add_item(show).add_native_item(SystemTrayMenuItem::Separator);
+    }
+
+    tray_menu = tray_menu.add_item(hide).add_native_item(SystemTrayMenuItem::Separator).add_item(quit);
 
     SystemTray::new().with_menu(tray_menu)
 }
@@ -22,13 +26,15 @@ pub fn system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
 
         match event {
             SystemTrayEvent::LeftClick { position: _, size: _, .. } => {
-                if !window.is_visible()? {
-                    window.show()?;
-                    window.set_focus()?;
-                }
+                if cfg!(target_os = "windows") {
+                    if !window.is_visible()? || !window.is_focused()? {
+                        window.show()?;
+                        window.set_focus()?;
+                    }
 
-                if window.is_visible()? && cfg!(target_os = "windows") {
-                    window.hide()?;
+                    if window.is_visible()? {
+                        window.hide()?;
+                    }
                 }
 
                 println!("左键点击了系统托盘");
@@ -42,13 +48,18 @@ pub fn system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
             SystemTrayEvent::MenuItemClick { id, .. } => {
                 // app.tray_handle() 可以动态设置图片及修改菜单项描述字
                 let menu_item_handle = app.tray_handle().get_item(&id);
+
                 match id.as_str() {
                     "quit" => {
                         std::process::exit(0);
                     }
+                    "show" => {
+                        window.show()?;
+                        window.set_focus()?;
+                    }
                     "hide" => {
                         window.hide()?;
-                        menu_item_handle.set_title("hide")?
+                        menu_item_handle.set_title("Hide")?
                     }
                     _ => {}
                 }
