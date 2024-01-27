@@ -200,12 +200,10 @@ body,
   // font-style 是否斜体, font-variant 和 font-weight 必须在 font-size 之前
   // line-height 必须跟在 font-size 后面，由 "/" 分隔，例如 "16px/3"
   // font-family 必须最后指定
-  font: 16px / 1.5 Ping fang SC Medium, system-ui, —apple-system, Segoe UI, Rototo, Emoji, Helvetica, Arial, sans-serif,
-    MiSans VF;
+  font: 16px / 1.5 Ping fang SC Medium, system-ui, —apple-system, Segoe UI, Rototo, Emoji, Helvetica, Arial, sans-serif, MiSans VF;
 
   // 张旭鑫推荐 字体 系统字体：system-ui(chrome、safari) —apple-system(firefox)  兜底字体：Segoe UI(window) Arial(旧windows) sans-serif (旧Android) Segoe UI(Android字体) Helvetica(Mac Os iOS)
-  font-family: Ping fang SC Medium, system-ui, —apple-system, Segoe UI, Rototo, Emoji, Helvetica, Arial, sans-serif,
-    MiSans VF;
+  font-family: Ping fang SC Medium, system-ui, —apple-system, Segoe UI, Rototo, Emoji, Helvetica, Arial, sans-serif, MiSans VF;
 
   -webkit-font-smoothing: antialiased; // 取消字体抗锯齿
   -moz-osx-font-smoothing: grayscale;
@@ -278,21 +276,6 @@ a:active {
   isolation: isolate;
 }
 
-/* Chrome Safari 滚动条样式*/
-//*::-webkit-scrollbar {
-//	width: 0.5em;
-//	height: 0.5em;
-//}
-//
-//*::-webkit-scrollbar-track {
-//	background-color: #eee;
-//}
-//
-//*::-webkit-scrollbar-thumb {
-//	border-radius: 50px;
-//	background-color: rgba(0, 0, 0, 0.3);
-//}
-
 // 火狐滚动条
 html {
   // 默认 auto 在Windows系统下是17px;
@@ -303,4 +286,8 @@ html {
   // 默认 auto
   // 两个值为 滑竿颜色 轨道颜色(鼠标悬浮才显示)
   scrollbar-color: rgba(0, 0, 0, 0.3) rgba(0, 0, 0, 0);
+}
+
+::-webkit-scrollbar {
+  width: 0;
 }
