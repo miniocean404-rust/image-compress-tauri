@@ -1,7 +1,14 @@
+@import "./var.scss";
+
 .simplebar-scrollbar::before {
   background-color: rgba(255, 255, 255, 0.7);
 }
 
 .simplebar-scrollbar.simplebar-visible:before {
   opacity: 1;
+}
+
+.simplebar-content-wrapper {
+  margin: 0 $padding-left-right;
+  border-radius: $box_radius;
 }

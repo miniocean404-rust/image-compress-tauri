@@ -1,16 +1,16 @@
-import { defineConfig, loadEnv, normalizePath, searchForWorkspaceRoot } from "vite";
-import react from "@vitejs/plugin-react";
-import { fileURLToPath, URL } from "node:url";
+import { defineConfig, loadEnv, normalizePath, searchForWorkspaceRoot } from "vite"
+import react from "@vitejs/plugin-react"
+import { fileURLToPath, URL } from "node:url"
 
 // https://vitejs.dev/config/
 export default defineConfig((config) => {
-  const isDev = config.mode === "development";
-  const isProd = config.mode === "production";
+  const isDev = config.mode === "development"
+  const isProd = config.mode === "production"
 
-  const isServe = config.command === "serve";
-  const isBuild = config.command === "build";
+  const isServe = config.command === "serve"
+  const isBuild = config.command === "build"
 
-  const env = loadEnv(config.mode, process.cwd());
+  const env = loadEnv(config.mode, process.cwd())
 
   return {
     plugins: [react()],
@@ -77,11 +77,11 @@ export default defineConfig((config) => {
           // 在不配置 manualchunks 的情况下，rollup会将每个模块文件打包成一个单独的 js 文件，不会对 chunk 进行合并，
           // 这会导致 chunk 数量太多，有些文件只有 几 kb（触发同域名网络请求最大数量限制）
           manualChunks: (id: string) => {
-            if (id.includes("/node_modules/lodash-es/")) return "lodash";
-            if (id.includes("/node_modules/ua-parser-js/")) return "ua-parser-js";
-            if (id.includes("/node_modules/jszip/")) return "jszip";
-            if (id.includes("/node_modules/element-plus/")) return "element-plus";
-            if (id.includes("/node_modules/")) return "vendor";
+            if (id.includes("/node_modules/lodash-es/")) return "lodash"
+            if (id.includes("/node_modules/ua-parser-js/")) return "ua-parser-js"
+            if (id.includes("/node_modules/jszip/")) return "jszip"
+            if (id.includes("/node_modules/element-plus/")) return "element-plus"
+            if (id.includes("/node_modules/")) return "vendor"
           },
           // rollup 在3.3之后的版本提供了一个实验性质的配置项 output.experimentalMinChunkSize，来合并小 chunk
           // 如果 chunk 小于这个值则会尝试跟其他 chunk 合并，它只对纯函数有作用，如果是 console.log 就会失效
@@ -113,7 +113,7 @@ export default defineConfig((config) => {
         charset: false,
         scss: {
           /* .scss全局预定义变量，引入多个文件 以;(分号分割)*/
-          additionalData: `@use "@/css/device/device.mixin.scss" as *;`,
+          additionalData: `@use "@/css/var/index.scss" as *;@use "@/css/device/device.mixin.scss" as *;`,
         },
       },
       // 可以查看 CSS 的源码
@@ -138,5 +138,5 @@ export default defineConfig((config) => {
       },
       cors: true, // 配置 CORS
     },
-  };
-});
+  }
+})

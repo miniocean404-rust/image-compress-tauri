@@ -1,5 +1,4 @@
-$theme_bg_image: linear-gradient(243deg, #fce38a, #f38181);
-$padding-left-right: 16px;
+@import "./var.scss";
 
 .box {
   width: 100%;
@@ -25,51 +24,56 @@ $padding-left-right: 16px;
   }
 
   .list {
-    width: 100%;
     overflow-y: scroll;
 
-    .list_box {
-      padding: 0 $padding-left-right;
+    .scrollbar {
+      height: 100%;
 
-      .drop-tip {
-        width: 100%;
-        height: 100%;
-        font-size: 60px;
+      .list_box {
+        .drop-tip {
+          width: 100%;
+          height: 100%;
+          font-size: 60px;
 
-        display: flex;
-        align-items: center;
-        justify-content: center;
+          display: flex;
+          align-items: center;
+          justify-content: center;
 
-        filter: blur(3px);
-      }
-
-      .image_info {
-        display: flex;
-        align-items: center;
-        justify-content: space-around;
-
-        height: 50px;
-        background: rgba(255, 255, 255, 1);
-        color: #262626;
-
-        margin: 1px 0px;
-        padding: 10px;
-
-        & span {
-          flex: 1;
+          filter: blur(3px);
         }
 
-        .cell-down {
-          & p {
-            cursor: pointer;
-            text-decoration: none;
-            color: rgb(255, 0, 0);
-            font-size: 12px;
+        .image_info {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+
+          height: 50px;
+          background: rgba(255, 255, 255, 1);
+          color: #262626;
+
+          margin-bottom: 2px;
+          padding: $box_padding;
+
+          &:hover {
+            background: rgb(225, 228, 231);
           }
-        }
 
-        &:hover {
-          background: rgb(225, 228, 231);
+          &:last-child {
+            margin-bottom: 0;
+          }
+
+          span {
+            flex: 1;
+          }
+
+          .cell-down {
+            & p {
+              cursor: pointer;
+              text-decoration: none;
+              color: rgb(255, 0, 0);
+              font-size: 12px;
+            }
+          }
         }
       }
     }
@@ -105,7 +109,7 @@ $padding-left-right: 16px;
 
         cursor: pointer;
         margin: 0 5px;
-        border-radius: 5px;
+        border-radius: $btn_radius;
         border: 1px solid #fff;
         padding: 2px 5px;
 

@@ -1713,6 +1713,7 @@ name = "image-compress-tauri"
 version = "0.0.3"
 dependencies = [
  "chrono",
+ "globset",
  "serde",
  "serde_json",
  "tauri",

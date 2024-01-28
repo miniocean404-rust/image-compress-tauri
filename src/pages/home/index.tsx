@@ -79,7 +79,7 @@ export default function Home() {
       </header>
 
       <div className={styles.list}>
-        <SimpleBar style={{ height: "100%" }}>
+        <SimpleBar className={styles.scrollbar}>
           <div className={styles.list_box}>
             {list.length === 0 && <div className={styles["drop-tip"]}>拖 放 图 片</div>}
 
