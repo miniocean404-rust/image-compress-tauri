@@ -1,9 +1,8 @@
 use std::path::PathBuf;
 
 use serde::{Deserialize, Serialize};
-use tracing::info;
 
-use crate::{compress::index::ImageCompression, utils::dir::glob_dir};
+use crate::compress::{index::ImageCompression, utils::dir::glob_dir};
 
 #[derive(Serialize, Deserialize)]
 pub struct DragFiles {

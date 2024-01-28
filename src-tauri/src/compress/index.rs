@@ -2,10 +2,9 @@ use std::{fs, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 
-use crate::{
-    constant::error::{OptionError, TauriError},
-    utils::mime::{get_filetype_from_path, SupportedFileTypes},
-};
+use crate::constant::error::OptionError;
+
+use super::utils::mime::{get_filetype_from_path, SupportedFileTypes};
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct ImageCompression {
@@ -62,4 +61,6 @@ impl ImageCompression {
             ..Default::default()
         }
     }
+
+    pub fn start_mem_compress(self) {}
 }
