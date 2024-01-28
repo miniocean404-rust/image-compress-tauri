@@ -13,7 +13,6 @@ use image_compress_tauri::{
         tray::index::{create_sys_tray, system_tray_event},
     },
 };
-use tracing::info;
 
 fn main() -> Result<(), Box<dyn Error>> {
     let _guard = init_tracing()?;

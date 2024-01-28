@@ -16,7 +16,7 @@ pub struct ImageCompression {
     pub path: String,
 
     #[serde(default)]
-    pub mem: Option<Vec<u8>>,
+    pub mem: Vec<u8>,
 
     #[serde(default)]
     pub r#type: SupportedFileTypes,
@@ -43,15 +43,15 @@ pub enum CompressState {
 }
 
 impl ImageCompression {
-    pub fn new(path: String, quality: i8) -> Self {
+    pub fn new(path: String, quality: i8) -> Result<Self, Box<dyn std::error::Error>> {
         let file_type = get_filetype_from_path(&path);
 
         let path_buf = PathBuf::from(&path);
-        let file_name = path_buf.file_name().ok_or(OptionError::NoValue).unwrap().to_string_lossy().to_string();
+        let file_name = path_buf.file_name().ok_or(OptionError::NoValue)?.to_string_lossy().to_string();
 
-        let before_size = fs::metadata(&path_buf).unwrap().len();
+        let before_size = fs::metadata(&path_buf)?.len();
 
-        Self {
+        Ok(Self {
             name: file_name,
             r#type: file_type,
             quality,
@@ -59,7 +59,7 @@ impl ImageCompression {
             path,
             // 没有初始化的字段使用默认值
             ..Default::default()
-        }
+        })
     }
 
     pub fn start_mem_compress(self) {}

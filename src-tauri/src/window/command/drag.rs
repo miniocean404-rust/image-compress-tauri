@@ -10,16 +10,17 @@ pub struct DragFiles {
 }
 
 #[tauri::command]
-pub fn get_drag_files(files: Vec<String>, quality: i8) -> Vec<Vec<ImageCompression>> {
-    let a: Vec<Vec<ImageCompression>> = files
+pub fn get_drag_files(files: Vec<String>, quality: i8) -> Vec<ImageCompression> {
+    files
         .iter()
         .map(|file| {
             let path = PathBuf::from(file);
             let files = glob_dir("*.{png,webp,gif,jpg,jpeg}", path.to_str().unwrap()).unwrap();
-            let imgs: Vec<ImageCompression> = files.into_iter().map(|file| ImageCompression::new(file, quality)).collect();
-
-            imgs
+            files
+                .into_iter()
+                .map(|file| ImageCompression::new(file, quality).unwrap())
+                .collect::<Vec<ImageCompression>>()
         })
-        .collect::<Vec<Vec<ImageCompression>>>();
-    a
+        .flat_map(|e| e.into_iter())
+        .collect::<Vec<ImageCompression>>()
 }

@@ -1,6 +1,6 @@
+use std::fs;
 use std::fs::File;
 use std::io::Write;
-use std::{error::Error, fs};
 
 use oxipng::Deflaters::Libdeflater;
 use oxipng::Options;

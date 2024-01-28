@@ -25,54 +25,54 @@
 
   .list {
     overflow-y: scroll;
+    height: 100%;
 
     .scrollbar {
-      height: 100%;
+      height: inherit;
 
-      .list_box {
-        .drop-tip {
-          width: 100%;
-          height: 100%;
-          font-size: 60px;
+      .tip {
+        height: inherit;
+        width: max-content;
+        font-size: 60px;
+        margin: 0 auto;
 
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        // display: flex;
+        // align-items: center;
+        // justify-content: center;
 
-          filter: blur(3px);
+        filter: blur(2px);
+      }
+
+      .image_info {
+        display: flex;
+        align-items: center;
+        justify-content: space-around;
+
+        height: 50px;
+        background: rgba(255, 255, 255, 1);
+        color: #262626;
+
+        margin-bottom: 2px;
+        padding: $box_padding;
+
+        &:last-child {
+          margin-bottom: 0;
         }
 
-        .image_info {
-          display: flex;
-          align-items: center;
-          justify-content: space-around;
+        &:hover {
+          background-color: hsl(240 4.8% 95.9%/0.5);
+        }
 
-          height: 50px;
-          background: rgba(255, 255, 255, 1);
-          color: #262626;
+        span {
+          flex: 1;
+        }
 
-          margin-bottom: 2px;
-          padding: $box_padding;
-
-          &:last-child {
-            margin-bottom: 0;
-          }
-
-          &:hover {
-            background-color: hsl(240 4.8% 95.9%/0.5);
-          }
-
-          span {
-            flex: 1;
-          }
-
-          .cell-down {
-            & p {
-              cursor: pointer;
-              text-decoration: none;
-              color: rgb(255, 0, 0);
-              font-size: 12px;
-            }
+        .cell-down {
+          & p {
+            cursor: pointer;
+            text-decoration: none;
+            color: rgb(255, 0, 0);
+            font-size: 12px;
           }
         }
       }

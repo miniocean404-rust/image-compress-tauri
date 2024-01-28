@@ -13,7 +13,7 @@ pub fn webp_compress(input_path: &str, output_path: &str) -> Result<(), Box<dyn 
     let mut output_file = File::create(output_path)?;
     let compressed_image = compress_to_mem(input_data)?;
 
-    output_file.write_all(&compressed_image).map_err(|e| WebpError::WriteError(e))?;
+    output_file.write_all(&compressed_image).map_err(WebpError::WriteError)?;
 
     Ok(())
 }

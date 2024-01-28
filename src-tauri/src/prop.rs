@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub struct JpegParameters {
     pub quality: u32,
     pub chroma_subsampling: ChromaSubsampling,
@@ -11,12 +11,6 @@ pub enum ChromaSubsampling {
     CS420,
     CS411,
     Auto,
-}
-
-impl Default for ChromaSubsampling {
-    fn default() -> Self {
-        ChromaSubsampling::Auto
-    }
 }
 
 #[derive(Copy, Clone, Default)]
@@ -35,7 +29,7 @@ pub struct WebPParameters {
     pub quality: u32,
 }
 
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub struct Props {
     pub jpeg: JpegParameters,
     pub png: PngParameters,

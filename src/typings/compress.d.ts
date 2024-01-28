@@ -1,12 +1,12 @@
 export interface ImageCompreessInfo {
   name: string
   state: CompressState
-  origin: string
-  compress: string
+  origin: number
+  compress: number
   rate: number
 }
 
-enum CompressState {
+export enum CompressState {
   Ready,
   Compressing,
   Done,

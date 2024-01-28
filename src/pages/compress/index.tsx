@@ -10,12 +10,19 @@ import { invoke } from "@tauri-apps/api/tauri"
 import { UnlistenFn } from "@tauri-apps/api/event"
 import { appWindow } from "@tauri-apps/api/window"
 
-import { ImageCompreessInfo } from "@/typings/compress"
+import { ImageCompreessInfo, CompressState } from "@/typings/compress"
+import { formartFileSize } from "@/utils/file"
 
 // DOM 内容加载完成之后，通过 invoke 调用 在 Rust 中已经注册的命令
 window.addEventListener("DOMContentLoaded", () => {
   setTimeout(async () => await invoke("close_splashscreen"), 1000)
 })
+
+const CompressStateChinese = {
+  ready: "准备",
+  compressing: "压缩中",
+  done: "完成",
+}
 
 export default function Home() {
   let unlistenRef = useRef<UnlistenFn | null>()
@@ -24,18 +31,6 @@ export default function Home() {
   const [quality, setQuality] = useState<number>(80)
 
   useMount(async () => {
-    setList(
-      Array.from(
-        [, , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , , ,].fill({
-          name: "1.png",
-          state: "完成",
-          origin: "1.2M",
-          compress: "1.2M",
-          rate: 0,
-        }),
-      ),
-    )
-
     // 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
     unlistenRef.current = await appWindow.onFileDropEvent(async (event) => {
       switch (event.payload.type) {
@@ -49,11 +44,8 @@ export default function Home() {
           setIsHover(false)
           // 读取目录
           // const entries = await readDir(event.payload[0], { dir: BaseDirectory.AppData, recursive: true });
-          const list = await invoke<any[]>("get_drag_files", { files: event.payload.paths, quality })
-
-          console.log(list.flat())
-
-          // setList(list)
+          const list = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
+          setList(list)
 
           break
       }
@@ -67,7 +59,9 @@ export default function Home() {
   const getQuality = (e) => {
     setQuality(e.target.value)
   }
-  const handleClear = () => {}
+  const handleClear = () => {
+    setList([])
+  }
   const handleDownload = () => {}
 
   return (
@@ -83,24 +77,22 @@ export default function Home() {
 
       <div className={styles.list}>
         <SimpleBar className={styles.scrollbar}>
-          <div className={styles.list_box}>
-            {list.length === 0 && <div className={styles["drop-tip"]}>拖 放 图 片</div>}
+          {list.length === 0 && <div className={styles.tip}>拖 放 图 片</div>}
 
-            {list.map((info, index) => {
-              return (
-                <div className={styles.image_info} key={index}>
-                  <span>{info.name || "--"}</span>
-                  <span>{info.state || "--"}</span>
-                  <span>{info.origin || "--"}</span>
-                  <span>{info.compress || "--"}</span>
-                  <span>{info.rate || "--"}</span>
-                  <span className={styles["cell-down"]}>
-                    <p onClick={() => {}}>{info.state === "完成" ? "保存" : "--"}</p>
-                  </span>
-                </div>
-              )
-            })}
-          </div>
+          {list.map((info, index) => {
+            return (
+              <div className={styles.image_info} key={index}>
+                <span>{info.name || "--"}</span>
+                <span>{CompressStateChinese[info.state] || "--"}</span>
+                <span>{formartFileSize(info.origin) || "--"}</span>
+                <span>{formartFileSize(info.compress) || "--"}</span>
+                <span>{info.rate || "--"}</span>
+                <span className={styles["cell-down"]}>
+                  <p onClick={() => {}}>{info.state === CompressState.Done ? "保存" : "--"}</p>
+                </span>
+              </div>
+            )
+          })}
         </SimpleBar>
       </div>
 
