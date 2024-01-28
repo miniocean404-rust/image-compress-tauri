@@ -2,11 +2,10 @@ use std::fs::File;
 use std::io::Write;
 use std::{error::Error, fs};
 
-use anyhow::Result;
 use oxipng::Deflaters::Libdeflater;
 use oxipng::Options;
 
-pub fn lossless_png(input: &str, output: &str) -> Result<(), Box<dyn Error>> {
+pub fn lossless_png(input: &str, output: &str) -> Result<(), Box<dyn std::error::Error>> {
     // let options = Options::max_compression(); // 设置压缩级别，范围是 0 到 6
 
     // let input = PathBuf::from(input);
@@ -37,7 +36,7 @@ pub fn lossless_png(input: &str, output: &str) -> Result<(), Box<dyn Error>> {
 }
 
 // https://github.com/valterkraemer/imagequant-wasm/blob/main/src/lib.rs
-pub async fn lossy_png(input: &str, output: &str) -> Result<()> {
+pub async fn lossy_png(input: &str, output: &str) -> Result<(), Box<dyn std::error::Error>> {
     let image = lodepng::decode32_file(input)?;
     let rgba = image.buffer;
     let width = image.width;

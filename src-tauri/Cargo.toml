@@ -3,7 +3,6 @@ name = "image-compress-tauri"
 version = "0.0.3"
 description = "A Tauri App"
 authors = ["you"]
-license = ""
 repository = ""
 edition = "2021"
 

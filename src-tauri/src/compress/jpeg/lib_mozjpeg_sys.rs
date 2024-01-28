@@ -7,13 +7,12 @@ use std::io::Write;
 use std::panic::catch_unwind;
 use std::{fs, mem, ptr};
 
-use anyhow::Ok;
 use libc::free;
 use mozjpeg_sys::*;
 
 use crate::prop::{ChromaSubsampling, Props};
 
-pub fn compress(input_path: &str, output_path: &str, props: &Props) -> anyhow::Result<()> {
+pub fn compress(input_path: &str, output_path: &str, props: &Props) -> Result<(), Box<dyn std::error::Error>> {
     let in_file = fs::read(input_path)?;
 
     let out_buffer = compress_to_memory(in_file, props)?;
@@ -23,11 +22,11 @@ pub fn compress(input_path: &str, output_path: &str, props: &Props) -> anyhow::R
     Ok(())
 }
 
-pub fn compress_to_memory(in_file: Vec<u8>, props: &Props) -> anyhow::Result<Vec<u8>> {
+pub fn compress_to_memory(in_file: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     unsafe { catch_unwind(|| if props.lossless { lossless(in_file, props) } else { lossy(in_file, props) }).unwrap() }
 }
 
-unsafe fn lossless(in_file: Vec<u8>, props: &Props) -> anyhow::Result<Vec<u8>> {
+unsafe fn lossless(in_file: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     // 设置压缩解压缩的结构体及错误处理
     let mut src_info: jpeg_decompress_struct = mem::zeroed();
     let mut src_err = mem::zeroed();
@@ -90,7 +89,7 @@ unsafe fn lossless(in_file: Vec<u8>, props: &Props) -> anyhow::Result<Vec<u8>> {
     Ok(result)
 }
 
-unsafe fn lossy(in_file: Vec<u8>, props: &Props) -> anyhow::Result<Vec<u8>> {
+unsafe fn lossy(in_file: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let mut src_info: jpeg_decompress_struct = mem::zeroed();
     let mut src_err = mem::zeroed();
     let mut dst_info: jpeg_compress_struct = mem::zeroed();

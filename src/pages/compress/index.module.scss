@@ -4,11 +4,11 @@
   width: 100%;
   height: 100%;
 
-  display: flex;
-  flex-flow: column;
-
   background-image: $theme_bg_image;
   color: #fff;
+
+  display: flex;
+  flex-flow: column;
 
   .header {
     padding: 10px $padding-left-right;
@@ -54,12 +54,12 @@
           margin-bottom: 2px;
           padding: $box_padding;
 
-          &:hover {
-            background: rgb(225, 228, 231);
-          }
-
           &:last-child {
             margin-bottom: 0;
+          }
+
+          &:hover {
+            background-color: hsl(240 4.8% 95.9%/0.5);
           }
 
           span {
@@ -95,6 +95,13 @@
 
         .silder {
           margin: 5px;
+          border-radius: $input_radius;
+          padding: $input_padding;
+
+          width: 45px;
+          font-size: $input_font_size;
+          line-height: $input_line_height;
+          border: $input_border;
         }
 
         .quality_num {

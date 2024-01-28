@@ -11,6 +11,12 @@ pub enum TauriError {
 }
 
 #[derive(Error, Debug)]
+pub enum OptionError {
+    #[error("没有获取 Option 值")]
+    NoValue,
+}
+
+#[derive(Error, Debug)]
 pub enum WebpError {
     #[error("webp 解码错误")]
     DecodeError,

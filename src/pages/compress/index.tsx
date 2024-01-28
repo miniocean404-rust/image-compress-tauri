@@ -6,21 +6,19 @@ import SimpleBar from "simplebar-react"
 import "simplebar-react/dist/simplebar.min.css"
 import "./scrollbar.scss"
 
-// import { invoke } from "@tauri-apps/api/tauri"
-// import { UnlistenFn } from "@tauri-apps/api/event"
-// import { appWindow } from "@tauri-apps/api/window"
-
-// import { invoke } from "@tauri-apps/api/tauri";
-
-// DOM 内容加载完成之后，通过 invoke 调用 在 Rust 中已经注册的命令
-// window.addEventListener("DOMContentLoaded", () => {
-//   setTimeout(async () => await invoke("close_splashscreen"), 1000);
-// });
+import { invoke } from "@tauri-apps/api/tauri"
+import { UnlistenFn } from "@tauri-apps/api/event"
+import { appWindow } from "@tauri-apps/api/window"
 
 import { ImageCompreessInfo } from "@/typings/compress"
 
+// DOM 内容加载完成之后，通过 invoke 调用 在 Rust 中已经注册的命令
+window.addEventListener("DOMContentLoaded", () => {
+  setTimeout(async () => await invoke("close_splashscreen"), 1000)
+})
+
 export default function Home() {
-  // let unlistenRef = useRef<UnlistenFn | null>()
+  let unlistenRef = useRef<UnlistenFn | null>()
   const [isHover, setIsHover] = useState<boolean>(false)
   const [list, setList] = useState<ImageCompreessInfo[]>([])
   const [quality, setQuality] = useState<number>(80)
@@ -39,26 +37,31 @@ export default function Home() {
     )
 
     // 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
-    // unlistenRef.current = await appWindow.onFileDropEvent(async (event) => {
-    //   switch (event.payload.type) {
-    //     case "hover":
-    //       setIsHover(true)
-    //       break
-    //     case "cancel":
-    //       setIsHover(false)
-    //       break
-    //     case "drop":
-    //       setIsHover(false)
-    //       // 读取目录
-    //       // const entries = await readDir(event.payload[0], { dir: BaseDirectory.AppData, recursive: true });
-    //       await invoke("get_drag_files", { files: event.payload.paths })
-    //       break
-    //   }
-    // })
+    unlistenRef.current = await appWindow.onFileDropEvent(async (event) => {
+      switch (event.payload.type) {
+        case "hover":
+          setIsHover(true)
+          break
+        case "cancel":
+          setIsHover(false)
+          break
+        case "drop":
+          setIsHover(false)
+          // 读取目录
+          // const entries = await readDir(event.payload[0], { dir: BaseDirectory.AppData, recursive: true });
+          const list = await invoke<any[]>("get_drag_files", { files: event.payload.paths, quality })
+
+          console.log(list.flat())
+
+          // setList(list)
+
+          break
+      }
+    })
   })
 
   useUnmount(() => {
-    // unlistenRef.current && unlistenRef.current()
+    unlistenRef.current && unlistenRef.current()
   })
 
   const getQuality = (e) => {
@@ -92,7 +95,7 @@ export default function Home() {
                   <span>{info.compress || "--"}</span>
                   <span>{info.rate || "--"}</span>
                   <span className={styles["cell-down"]}>
-                    <p onClick={() => {}}>{info.action === "完成" ? "保存" : "--"}</p>
+                    <p onClick={() => {}}>{info.state === "完成" ? "保存" : "--"}</p>
                   </span>
                 </div>
               )
@@ -107,10 +110,7 @@ export default function Home() {
         <div className={styles.action}>
           <div className={styles.quality_box}>
             <span>质量</span>
-
-            <input className={styles.silder} type='range' min='0' max='100' value={quality} onChange={getQuality} />
-
-            <div className={styles.quality_num}>{quality}%</div>
+            <input className={styles.silder} value={quality} onChange={getQuality} />%
           </div>
 
           <div className={styles.btn} onClick={handleClear}>
