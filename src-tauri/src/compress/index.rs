@@ -1,10 +1,14 @@
 use std::{fs, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
+use tracing::error;
 
 use crate::constant::error::OptionError;
 
-use super::utils::mime::{get_filetype_from_path, SupportedFileTypes};
+use super::{
+    core::{png::lossless_png_mem, webp::compress_to_mem},
+    utils::mime::{get_filetype_from_path, SupportedFileTypes},
+};
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
 pub struct ImageCompression {
@@ -24,9 +28,11 @@ pub struct ImageCompression {
     #[serde(default)]
     pub quality: i8,
 
-    #[serde(default, rename(serialize = "origin"))]
+    // serialize 把 before_size 序列化为 origin | deserialize 把 origin 反序列化为 before_size
+    #[serde(default, rename(serialize = "origin", deserialize = "origin"))]
     pub before_size: u64,
-    #[serde(default, rename(serialize = "compress"))]
+
+    #[serde(default, rename(serialize = "compress", deserialize = "compress"))]
     pub after_size: usize,
 
     #[serde(default)]
@@ -37,7 +43,6 @@ pub struct ImageCompression {
 #[serde(rename_all = "lowercase")] // 序列化枚举为小写字符串
 pub enum CompressState {
     #[default]
-    Ready,
     Compressing,
     Done,
 }
@@ -62,5 +67,21 @@ impl ImageCompression {
         })
     }
 
-    pub fn start_mem_compress(self) {}
+    pub fn start_mem_compress(&mut self) {
+        self.state = CompressState::Done;
+
+        match self.r#type {
+            SupportedFileTypes::Jpeg => todo!(),
+            SupportedFileTypes::Png => {
+                self.mem = lossless_png_mem(&self.path).unwrap();
+            }
+            SupportedFileTypes::WebP => {
+                self.mem = compress_to_mem(&self.path).unwrap();
+            }
+            SupportedFileTypes::Gif => todo!(),
+            SupportedFileTypes::Unknown => {
+                error!("不支持的类型")
+            }
+        }
+    }
 }

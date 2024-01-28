@@ -4,10 +4,13 @@ export interface ImageCompreessInfo {
   origin: number
   compress: number
   rate: number
+
+  path: string
+  mem: number[]
+  type: string
 }
 
 export enum CompressState {
-  Ready,
-  Compressing,
-  Done,
+  Compressing = "compressing",
+  Done = "done",
 }

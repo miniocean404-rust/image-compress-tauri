@@ -5,3 +5,10 @@ export function formartFileSize(bytes: number) {
 
   return `${(bytes / 1024 ** i).toFixed(2)} ${sizes[i]}`
 }
+
+export const downloadUrl = (url: string, filename: string) => {
+  const a = document.createElement("a")
+  a.href = url
+  a.download = filename
+  a.click()
+}

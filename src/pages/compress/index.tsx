@@ -12,6 +12,7 @@ import { appWindow } from "@tauri-apps/api/window"
 
 import { ImageCompreessInfo, CompressState } from "@/typings/compress"
 import { formartFileSize } from "@/utils/file"
+import { BaseDirectory, writeBinaryFile } from "@tauri-apps/api/fs"
 
 // DOM 内容加载完成之后，通过 invoke 调用 在 Rust 中已经注册的命令
 window.addEventListener("DOMContentLoaded", () => {
@@ -19,7 +20,6 @@ window.addEventListener("DOMContentLoaded", () => {
 })
 
 const CompressStateChinese = {
-  ready: "准备",
   compressing: "压缩中",
   done: "完成",
 }
@@ -42,10 +42,16 @@ export default function Home() {
           break
         case "drop":
           setIsHover(false)
-          // 读取目录
-          // const entries = await readDir(event.payload[0], { dir: BaseDirectory.AppData, recursive: true });
           const list = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
           setList(list)
+
+          for (let index = 0; index < list.length; index++) {
+            const info = list[index]
+            invoke<ImageCompreessInfo>("start_compress", { info }).then((done) => {
+              list[index] = info.path === done.path ? done : info
+              setList([...list])
+            })
+          }
 
           break
       }
@@ -62,7 +68,14 @@ export default function Home() {
   const handleClear = () => {
     setList([])
   }
+
   const handleDownload = () => {}
+
+  const downloadImg = async (mem: number[], name: string, type: string) => {
+    console.log(BaseDirectory.Desktop)
+
+    await writeBinaryFile(name, new Uint8Array(mem), { dir: BaseDirectory.Desktop })
+  }
 
   return (
     <div className={styles.box} style={{ backgroundColor: isHover ? "red" : "" }}>
@@ -79,16 +92,16 @@ export default function Home() {
         <SimpleBar className={styles.scrollbar}>
           {list.length === 0 && <div className={styles.tip}>拖 放 图 片</div>}
 
-          {list.map((info, index) => {
+          {list.map((info) => {
             return (
-              <div className={styles.image_info} key={index}>
+              <div className={styles.image_info} key={info.path}>
                 <span>{info.name || "--"}</span>
                 <span>{CompressStateChinese[info.state] || "--"}</span>
                 <span>{formartFileSize(info.origin) || "--"}</span>
                 <span>{formartFileSize(info.compress) || "--"}</span>
                 <span>{info.rate || "--"}</span>
                 <span className={styles["cell-down"]}>
-                  <p onClick={() => {}}>{info.state === CompressState.Done ? "保存" : "--"}</p>
+                  <p onClick={() => downloadImg(info.mem, info.name, info.type)}>{info.state === CompressState.Done ? "保存" : "--"}</p>
                 </span>
               </div>
             )

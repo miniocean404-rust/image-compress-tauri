@@ -1,2 +1,2 @@
-pub mod custom;
 pub mod drag;
+pub mod splash;

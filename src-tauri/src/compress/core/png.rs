@@ -20,13 +20,7 @@ pub fn lossless_png(input: &str, output: &str) -> Result<(), Box<dyn std::error:
     //     &options,
     // )?;
 
-    let in_file = fs::read(input)?;
-
-    // let mut oxipng_options = oxipng::Options::default();
-    // oxipng_options.deflate = Zopfli { iterations: NonZeroU8::new(15).ok_or("")?};
-    let mut oxipng_options = Options::from_preset(6);
-    oxipng_options.deflate = Libdeflater { compression: 6 };
-    let png_vec = oxipng::optimize_from_memory(in_file.as_slice(), &oxipng_options)?;
+    let png_vec = lossless_png_mem(input)?;
 
     // 写入文件
     let mut output_file = File::create(output)?;
@@ -35,8 +29,29 @@ pub fn lossless_png(input: &str, output: &str) -> Result<(), Box<dyn std::error:
     Ok(())
 }
 
+pub fn lossless_png_mem(input: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    let in_file = fs::read(input)?;
+
+    // let mut oxipng_options = oxipng::Options::default();
+    // oxipng_options.deflate = Zopfli { iterations: NonZeroU8::new(15).ok_or("")?};
+    let mut oxipng_options = Options::from_preset(6);
+    oxipng_options.deflate = Libdeflater { compression: 6 };
+    let png_vec = oxipng::optimize_from_memory(in_file.as_slice(), &oxipng_options)?;
+
+    Ok(png_vec)
+}
+
 // https://github.com/valterkraemer/imagequant-wasm/blob/main/src/lib.rs
-pub async fn lossy_png(input: &str, output: &str) -> Result<(), Box<dyn std::error::Error>> {
+pub fn lossy_png(input: &str, output: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let png_vec = lossy_png_mem(input)?;
+
+    let mut output_file = File::create(output)?;
+    output_file.write_all(png_vec.as_slice())?;
+
+    Ok(())
+}
+
+pub fn lossy_png_mem(input: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let image = lodepng::decode32_file(input)?;
     let rgba = image.buffer;
     let width = image.width;
@@ -60,8 +75,6 @@ pub async fn lossy_png(input: &str, output: &str) -> Result<(), Box<dyn std::err
     // 写入文件
     // encoder.encode_file(output, pixels.as_slice(), width, height)?;
     let png_vec = encoder.encode(pixels.as_slice(), width, height)?;
-    let mut output_file = File::create(output)?;
-    output_file.write_all(png_vec.as_slice())?;
 
-    Ok(())
+    Ok(png_vec)
 }
