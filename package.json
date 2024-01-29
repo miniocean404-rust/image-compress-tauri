@@ -9,8 +9,7 @@
     "build:release": "tauri build",
     "output:icon": "tauri icon fire.png -o src-tauri/icons",
     "vite:dev": "vite",
-    "vite:build": " vite build",
-    "vite:tsc:build": "tsc && vite build",
+    "vite:build": "tsc && vite build",
     "vite:preview": "vite preview",
     "release": "node scripts/release.mjs",
     "updater": "node scripts/updater.mjs"

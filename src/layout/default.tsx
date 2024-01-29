@@ -1,11 +1,19 @@
-import { PropsWithChildren, ReactNode } from "react"
+import { PropsWithChildren, ReactNode, useEffect, useState } from "react"
 import { Outlet, ScrollRestoration } from "react-router-dom"
 import { type } from "@tauri-apps/api/os"
 
 import styles from "./defaylt.module.scss"
 
-async function DefaultLayout({ children }: PropsWithChildren<any>): Promise<ReactNode> {
-  const isMac = (await type()) === "Darwin"
+function DefaultLayout({ children }: PropsWithChildren<any>): ReactNode {
+  const [isMac, setIsMac] = useState(false)
+  useEffect(() => {
+    init()
+  }, [])
+
+  const init = async () => {
+    const isMac = (await type()) === "Darwin"
+    setIsMac(isMac)
+  }
 
   return (
     <div className={styles.layouBox}>
