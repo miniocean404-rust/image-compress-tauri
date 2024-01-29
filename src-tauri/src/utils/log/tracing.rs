@@ -10,7 +10,7 @@ use tracing_subscriber::{
     },
     layer::SubscriberExt,
     util::SubscriberInitExt,
-    EnvFilter, Registry,
+    Registry,
 };
 
 use super::time::LocalTimer;
@@ -22,11 +22,9 @@ pub fn init_tracing() -> Result<WorkerGuard, Box<dyn Error + 'static>> {
     // 使用 tracing_appender，指定日志的输出目标位置
     // 参考: https://docs.rs/tracing-appender/0.2.0/tracing_appender/
 
-    #[cfg(debug_assertions)]
     // 设置日志过滤器，只输出项目下的不含第三方库的日志 过滤器格式：https://docs.rs/tracing-subscriber/0.3.18/tracing_subscriber/filter/struct.EnvFilter.html#example-syntax
-    let my_create = env!("CARGO_PKG_NAME").replace('-', "_");
-    #[cfg(debug_assertions)]
-    let filter = EnvFilter::from_default_env().add_directive(my_create.parse()?);
+    // let my_create = env!("CARGO_PKG_NAME").replace('-', "_");
+    // let filter = EnvFilter::from_default_env().add_directive(my_create.parse()?);
 
     let file_appender = tracing_appender::rolling::daily("./logs", "tracing.log");
     // 如果 non_blocking 不在 main 中，需要把 guard 返回给 main
@@ -35,11 +33,11 @@ pub fn init_tracing() -> Result<WorkerGuard, Box<dyn Error + 'static>> {
     let tty = fmt::layer().with_writer(io::stdout).event_format(get_formart(true));
     let file = fmt::layer().with_writer(_non_blocking).event_format(get_formart(false));
 
-    #[cfg(debug_assertions)]
-    let registry = Registry::default().with(filter).with(tty).with(file);
+    let registry = Registry::default()
+        // .with(filter)
+        .with(tty)
+        .with(file);
 
-    #[cfg(not(debug_assertions))]
-    let registry = Registry::default().with(tty).with(file);
     registry.init();
 
     // 初始化并设置日志格式(定制和筛选日志)
