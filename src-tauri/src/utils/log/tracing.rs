@@ -35,7 +35,11 @@ pub fn init_tracing() -> Result<WorkerGuard, Box<dyn Error + 'static>> {
     let tty = fmt::layer().with_writer(io::stdout).event_format(get_formart(true));
     let file = fmt::layer().with_writer(_non_blocking).event_format(get_formart(false));
 
+    #[cfg(debug_assertions)]
     let registry = Registry::default().with(filter).with(tty).with(file);
+
+    #[cfg(not(debug_assertions))]
+    let registry = Registry::default().with(tty).with(file);
     registry.init();
 
     // 初始化并设置日志格式(定制和筛选日志)
