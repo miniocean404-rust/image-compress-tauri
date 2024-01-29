@@ -6,7 +6,7 @@ use tracing::error;
 use crate::constant::error::OptionError;
 
 use super::{
-    core::{png::lossless_png_mem, webp::compress_to_mem},
+    core::{png::lossless_png_mem, webp::webp_compress_to_mem},
     utils::mime::{get_filetype_from_path, SupportedFileTypes},
 };
 
@@ -71,14 +71,14 @@ impl ImageCompression {
         self.state = CompressState::Done;
 
         match self.r#type {
-            SupportedFileTypes::Jpeg => todo!(),
+            SupportedFileTypes::Jpeg => {}
             SupportedFileTypes::Png => {
                 self.mem = lossless_png_mem(&self.path).unwrap();
             }
             SupportedFileTypes::WebP => {
-                self.mem = compress_to_mem(&self.path).unwrap();
+                self.mem = webp_compress_to_mem(&self.path).unwrap();
             }
-            SupportedFileTypes::Gif => todo!(),
+            SupportedFileTypes::Gif => {}
             SupportedFileTypes::Unknown => {
                 error!("不支持的类型")
             }

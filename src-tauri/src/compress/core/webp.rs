@@ -5,7 +5,7 @@ use std::ops::Deref;
 use crate::constant::error::WebpError;
 
 pub fn webp_compress(input_path: &str, output_path: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let compressed_image = compress_to_mem(input_path)?;
+    let compressed_image = webp_compress_to_mem(input_path)?;
     let mut output_file = File::create(output_path)?;
 
     output_file.write_all(&compressed_image).map_err(WebpError::WriteError)?;
@@ -13,7 +13,7 @@ pub fn webp_compress(input_path: &str, output_path: &str) -> Result<(), Box<dyn 
     Ok(())
 }
 
-pub fn compress_to_mem(input_path: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+pub fn webp_compress_to_mem(input_path: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let mut input_file = File::open(input_path)?;
 
     let mut input_data = Vec::new();
