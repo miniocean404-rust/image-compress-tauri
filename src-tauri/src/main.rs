@@ -16,21 +16,26 @@ use image_compress_tauri::{
         tray::index::{create_sys_tray, system_tray_event},
     },
 };
+use tracing::warn;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // let rt = tokio::runtime::Builder::new_multi_thread()
-    //     // 开启所有特性
-    //     .enable_all()
-    //     // 监听线程停止
-    //     .on_thread_stop(async_thread_stop)
-    //     // 构建 runtime
-    //     .build()?;
+    // let _guard = init_tracing()?;
 
-    // // 等价于 #[tokio::main()]
-    // rt.block_on(async_main())?;
+    let rt = tokio::runtime::Builder::new_multi_thread()
+        // 开启所有特性
+        .enable_all()
+        // 监听线程停止
+        .on_thread_stop(async_thread_stop)
+        // 构建 runtime
+        .build()?;
 
-    let _guard = init_tracing()?;
+    // 等价于 #[tokio::main()]
+    rt.block_on(async_main())?;
 
+    Ok(())
+}
+
+async fn async_main() -> Result<(), Box<dyn Error>> {
     tauri::Builder::default()
         .setup(setup)
         .system_tray(create_sys_tray())
@@ -47,8 +52,6 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-// async fn async_main() -> Result<(), Box<dyn Error>> {}
-
-// fn async_thread_stop() {
-// warn!("异步线程停止了");
-// }
+fn async_thread_stop() {
+    warn!("异步线程停止了");
+}
