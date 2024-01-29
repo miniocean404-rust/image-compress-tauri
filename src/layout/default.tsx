@@ -5,8 +5,7 @@ import { type } from "@tauri-apps/api/os"
 import styles from "./defaylt.module.scss"
 
 async function DefaultLayout({ children }: PropsWithChildren<any>): Promise<ReactNode> {
-  const typeOs = await type()
-  const isMac = typeOs === "Darwin"
+  const isMac = (await type()) === "Darwin"
 
   return (
     <div className={styles.layouBox}>
