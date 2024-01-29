@@ -4,10 +4,10 @@ import { type } from "@tauri-apps/api/os"
 
 import styles from "./defaylt.module.scss"
 
-const typeOs = await type()
-const isMac = typeOs === "Darwin"
+async function DefaultLayout({ children }: PropsWithChildren<any>): Promise<ReactNode> {
+  const typeOs = await type()
+  const isMac = typeOs === "Darwin"
 
-function DefaultLayout({ children }: PropsWithChildren<any>): ReactNode {
   return (
     <div className={styles.layouBox}>
       {/* 需要开启 allowlist.windows.startDragging = true */}
