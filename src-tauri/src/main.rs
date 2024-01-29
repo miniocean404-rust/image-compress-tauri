@@ -47,8 +47,8 @@ fn main() -> Result<(), Box<dyn Error>> {
     Ok(())
 }
 
-async fn async_main() -> Result<(), Box<dyn Error>> {}
+// async fn async_main() -> Result<(), Box<dyn Error>> {}
 
-fn async_thread_stop() {
-    // warn!("异步线程停止了");
-}
+// fn async_thread_stop() {
+// warn!("异步线程停止了");
+// }
