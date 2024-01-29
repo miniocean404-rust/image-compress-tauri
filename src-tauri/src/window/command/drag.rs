@@ -28,17 +28,19 @@ pub fn get_drag_files(files: Vec<String>, quality: i8) -> Vec<ImageCompression> 
 
 #[tauri::command]
 pub async fn start_compress(info: ImageCompression) -> ImageCompression {
-    let (tx, mut r) = mpsc::channel::<ImageCompression>(1);
+    // let (tx, mut r) = mpsc::channel::<ImageCompression>(1);
 
-    let arc_info = Arc::new(RwLock::new(info));
-    let clone_info = Arc::clone(&arc_info);
+    // let arc_info = Arc::new(RwLock::new(info));
+    // let clone_info = Arc::clone(&arc_info);
 
-    tokio::spawn(async move {
-        let mut rw_info = clone_info.write().await;
-        rw_info.start_mem_compress();
+    // tokio::spawn(async move {
+    //     let mut rw_info = clone_info.write().await;
+    //     rw_info.start_mem_compress();
 
-        tx.send(rw_info.to_owned()).await.unwrap();
-    });
+    //     tx.send(rw_info.to_owned()).await.unwrap();
+    // });
 
-    r.recv().await.unwrap()
+    // r.recv().await.unwrap()
+
+    info
 }

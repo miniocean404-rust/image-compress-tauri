@@ -22,8 +22,10 @@ pub fn init_tracing() -> Result<WorkerGuard, Box<dyn Error + 'static>> {
     // 使用 tracing_appender，指定日志的输出目标位置
     // 参考: https://docs.rs/tracing-appender/0.2.0/tracing_appender/
 
+    #[cfg(debug_assertions)]
     // 设置日志过滤器，只输出项目下的不含第三方库的日志 过滤器格式：https://docs.rs/tracing-subscriber/0.3.18/tracing_subscriber/filter/struct.EnvFilter.html#example-syntax
     let my_create = env!("CARGO_PKG_NAME").replace('-', "_");
+    #[cfg(debug_assertions)]
     let filter = EnvFilter::from_default_env().add_directive(my_create.parse()?);
 
     let file_appender = tracing_appender::rolling::daily("./logs", "tracing.log");

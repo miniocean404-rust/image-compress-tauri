@@ -19,7 +19,7 @@ use image_compress_tauri::{
 use tracing::warn;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    // let _guard = init_tracing()?;
+    let _guard = init_tracing()?;
 
     let rt = tokio::runtime::Builder::new_multi_thread()
         // 开启所有特性
