@@ -73,10 +73,10 @@ impl ImageCompression {
         match self.r#type {
             SupportedFileTypes::Jpeg => todo!(),
             SupportedFileTypes::Png => {
-                self.mem = lossless_png_mem(&self.path).unwrap();
+                // self.mem = lossless_png_mem(&self.path).unwrap();
             }
             SupportedFileTypes::WebP => {
-                self.mem = compress_to_mem(&self.path).unwrap();
+                // self.mem = compress_to_mem(&self.path).unwrap();
             }
             SupportedFileTypes::Gif => todo!(),
             SupportedFileTypes::Unknown => {
