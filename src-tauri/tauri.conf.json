@@ -8,7 +8,7 @@
   },
   "package": {
     "productName": "图片压缩",
-    "version": "0.0.11"
+    "version": "0.0.1"
   },
   "tauri": {
     "allowlist": {
@@ -53,6 +53,17 @@
       }
     },
     "bundle": {
+      "windows": {
+        "wix": {
+          "language": "zh-CN"
+        },
+        "nsis": {
+          "displayLanguageSelector": true,
+          "languages": [
+            "SimpChinese"
+          ]
+        }
+      },
       "active": true,
       "targets": "all",
       "identifier": "com.miniocean.compress.image",

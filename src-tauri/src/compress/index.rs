@@ -6,7 +6,7 @@ use tracing::error;
 use crate::constant::error::OptionError;
 
 use super::{
-    core::{png::lossless_png_mem, webp::compress_to_mem},
+    core::{png, webp},
     utils::mime::{get_filetype_from_path, SupportedFileTypes},
 };
 
@@ -22,8 +22,8 @@ pub struct ImageCompression {
     #[serde(default)]
     pub mem: Vec<u8>,
 
-    #[serde(default)]
-    pub r#type: SupportedFileTypes,
+    #[serde(default, rename(serialize = "type", deserialize = "type"))]
+    pub file_type: SupportedFileTypes,
 
     #[serde(default)]
     pub quality: i8,
@@ -58,7 +58,7 @@ impl ImageCompression {
 
         Ok(Self {
             name: file_name,
-            r#type: file_type,
+            file_type,
             quality,
             before_size,
             path,
@@ -70,15 +70,15 @@ impl ImageCompression {
     pub fn start_mem_compress(&mut self) {
         self.state = CompressState::Done;
 
-        match self.r#type {
-            SupportedFileTypes::Jpeg => todo!(),
+        match self.file_type {
+            SupportedFileTypes::Jpeg => {}
             SupportedFileTypes::Png => {
-                self.mem = lossless_png_mem(&self.path).unwrap();
+                self.mem = png::lossless::to_mem(&self.path).unwrap();
             }
             SupportedFileTypes::WebP => {
-                self.mem = compress_to_mem(&self.path).unwrap();
+                self.mem = webp::to_mem(&self.path, true).unwrap();
             }
-            SupportedFileTypes::Gif => todo!(),
+            SupportedFileTypes::Gif => {}
             SupportedFileTypes::Unknown => {
                 error!("不支持的类型")
             }
