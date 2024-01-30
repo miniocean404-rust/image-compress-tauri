@@ -1,11 +1,32 @@
+#![feature(c_unwind)]
+#![allow(unused_attributes)]
+
+use std::error::Error;
 use std::ffi::c_void;
 
-use std::{mem, ptr};
+use std::fs::File;
+use std::io::Write;
+use std::panic::catch_unwind;
+use std::{fs, mem, ptr};
 
 use libc::free;
 use mozjpeg_sys::*;
 
 use super::common::{error_handler, error_message_handler, write_metadata};
+
+pub fn to_mem(input: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    let in_file = fs::read(input)?;
+
+    unsafe { catch_unwind(|| -> Result<Vec<u8>, Box<dyn Error>> { lossless(in_file, false) }).expect("执行 jpeg_sys panic 了") }
+}
+
+pub fn to_file(input: &str, output: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let out_buffer = to_mem(input)?;
+    let mut out_file = File::create(output)?;
+    out_file.write_all(&out_buffer)?;
+
+    Ok(())
+}
 
 /// # Safety
 pub unsafe fn lossless(mem: Vec<u8>, keep_metadata: bool) -> Result<Vec<u8>, Box<dyn std::error::Error>> {

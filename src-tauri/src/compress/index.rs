@@ -72,7 +72,7 @@ impl ImageCompression {
 
         match self.file_type {
             SupportedFileTypes::Jpeg => {
-                self.mem = jpeg::lib_mozjpeg_sys::index::to_mem(&self.path, false).unwrap();
+                self.mem = jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path).unwrap();
             }
             SupportedFileTypes::Png => {
                 self.mem = png::lossless::to_mem(&self.path).unwrap();

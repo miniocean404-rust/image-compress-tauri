@@ -1,13 +1,30 @@
-use std::mem;
-
 use libc::free;
 use mozjpeg_sys::{
     boolean, c_int, c_void, jpeg_compress_struct, jpeg_create_compress, jpeg_create_decompress, jpeg_decompress_struct, jpeg_destroy_compress,
     jpeg_destroy_decompress, jpeg_finish_compress, jpeg_finish_decompress, jpeg_mem_dest, jpeg_mem_src, jpeg_read_header, jpeg_read_scanlines,
     jpeg_save_markers, jpeg_set_defaults, jpeg_set_quality, jpeg_start_compress, jpeg_start_decompress, jpeg_std_error, jpeg_write_scanlines, J_DCT_METHOD,
 };
+use std::fs;
+use std::fs::File;
+use std::mem;
+use std::panic::catch_unwind;
+use std::{error::Error, io::Write};
 
 use super::common::{error_handler, error_message_handler, set_chroma_subsampling, write_metadata, ChromaSubsampling};
+
+pub fn to_mem(input: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+    let in_file = fs::read(input)?;
+
+    unsafe { catch_unwind(|| -> Result<Vec<u8>, Box<dyn Error>> { lossy(in_file, false, 80, ChromaSubsampling::Auto) }).expect("执行 jpeg_sys panic 了") }
+}
+
+pub fn to_file(input: &str, output: &str) -> Result<(), Box<dyn std::error::Error>> {
+    let out_buffer = to_mem(input)?;
+    let mut out_file = File::create(output)?;
+    out_file.write_all(&out_buffer)?;
+
+    Ok(())
+}
 
 /// # Safety
 pub unsafe fn lossy(mem: Vec<u8>, keep_metadata: bool, quality: i32, chroma_subsampling: ChromaSubsampling) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
