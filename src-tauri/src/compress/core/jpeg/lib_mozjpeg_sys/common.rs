@@ -2,12 +2,6 @@ use std::ffi::c_int;
 
 use mozjpeg_sys::{jpeg_common_struct, jpeg_compress_struct, jpeg_decompress_struct, jpeg_write_marker};
 
-#[derive(Copy, Clone)]
-pub struct JpegParameters {
-    pub quality: u32,
-    pub chroma_subsampling: ChromaSubsampling,
-}
-
 #[derive(Copy, Clone, PartialEq)]
 pub enum ChromaSubsampling {
     CS444,
@@ -15,16 +9,6 @@ pub enum ChromaSubsampling {
     CS420,
     CS411,
     Auto,
-}
-
-#[derive(Copy, Clone)]
-pub struct Props {
-    pub jpeg: JpegParameters,
-    pub keep_metadata: bool,
-    pub lossless: bool,
-    pub width: u32,
-    pub height: u32,
-    pub output_size: u32,
 }
 
 pub(crate) unsafe fn set_chroma_subsampling(subsampling: ChromaSubsampling, dst_info: &mut jpeg_compress_struct) {

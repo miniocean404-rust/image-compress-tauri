@@ -7,10 +7,10 @@ use mozjpeg_sys::{
     jpeg_save_markers, jpeg_set_defaults, jpeg_set_quality, jpeg_start_compress, jpeg_start_decompress, jpeg_std_error, jpeg_write_scanlines, J_DCT_METHOD,
 };
 
-use super::common::{error_handler, error_message_handler, set_chroma_subsampling, write_metadata, ChromaSubsampling, Props};
+use super::common::{error_handler, error_message_handler, set_chroma_subsampling, write_metadata, ChromaSubsampling};
 
 /// # Safety
-pub unsafe fn lossy(mem: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+pub unsafe fn lossy(mem: Vec<u8>, keep_metadata: bool, quality: i32, chroma_subsampling: ChromaSubsampling) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let mut decompress_info: jpeg_decompress_struct = mem::zeroed();
     let mut compress_info: jpeg_compress_struct = mem::zeroed();
 
@@ -29,7 +29,7 @@ pub unsafe fn lossy(mem: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn std:
 
     jpeg_mem_src(&mut decompress_info, mem.as_ptr(), mem.len() as _);
 
-    if props.keep_metadata {
+    if keep_metadata {
         jpeg_save_markers(&mut decompress_info, 0xFE, 0xFFFF);
         for m in 0..16 {
             jpeg_save_markers(&mut decompress_info, 0xE0 + m, 0xFFFF);
@@ -63,6 +63,7 @@ pub unsafe fn lossy(mem: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn std:
         mozjpeg_sys::J_COLOR_SPACE::JCS_YCCK => 4,
         _ => 3,
     };
+
     let mut buf_size = 0;
     let mut buf = mem::zeroed();
     jpeg_mem_dest(&mut compress_info, &mut buf, &mut buf_size);
@@ -73,18 +74,18 @@ pub unsafe fn lossy(mem: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn std:
     compress_info.input_components = input_components as c_int;
     jpeg_set_defaults(&mut compress_info);
 
-    if input_components == 3 && props.jpeg.chroma_subsampling != ChromaSubsampling::Auto {
-        set_chroma_subsampling(props.jpeg.chroma_subsampling, &mut compress_info);
+    if input_components == 3 && chroma_subsampling != ChromaSubsampling::Auto {
+        set_chroma_subsampling(chroma_subsampling, &mut compress_info);
     }
 
     let row_stride = compress_info.image_width as usize * compress_info.input_components as usize;
     compress_info.dct_method = J_DCT_METHOD::JDCT_ISLOW;
     compress_info.optimize_coding = i32::from(true);
-    jpeg_set_quality(&mut compress_info, props.jpeg.quality as i32, false as boolean);
+    jpeg_set_quality(&mut compress_info, quality, false as boolean);
 
     jpeg_start_compress(&mut compress_info, true as boolean);
 
-    if props.keep_metadata {
+    if keep_metadata {
         write_metadata(&mut decompress_info, &mut compress_info);
     }
 

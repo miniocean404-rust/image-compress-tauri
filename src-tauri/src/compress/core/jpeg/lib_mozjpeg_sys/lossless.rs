@@ -5,10 +5,10 @@ use std::{mem, ptr};
 use libc::free;
 use mozjpeg_sys::*;
 
-use super::common::{error_handler, error_message_handler, write_metadata, Props};
+use super::common::{error_handler, error_message_handler, write_metadata};
 
 /// # Safety
-pub unsafe fn lossless(mem: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+pub unsafe fn lossless(mem: Vec<u8>, keep_metadata: bool) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     // 创建压缩数据指针
     let mut decompress_info: jpeg_decompress_struct = mem::zeroed();
     let mut compress_info: jpeg_compress_struct = mem::zeroed();
@@ -32,7 +32,7 @@ pub unsafe fn lossless(mem: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn s
     // 设置解压缩 vec 数据到 decompress_info
     jpeg_mem_src(&mut decompress_info, mem.as_ptr(), mem.len() as c_ulong);
 
-    if props.keep_metadata {
+    if keep_metadata {
         jpeg_save_markers(&mut decompress_info, 0xFE, 0xFFFF);
         for m in 0..16 {
             jpeg_save_markers(&mut decompress_info, 0xE0 + m, 0xFFFF);
@@ -55,7 +55,7 @@ pub unsafe fn lossless(mem: Vec<u8>, props: &Props) -> Result<Vec<u8>, Box<dyn s
     jpeg_mem_dest(&mut compress_info, &mut buf, &mut buf_size);
     jpeg_write_coefficients(&mut compress_info, dst_coef_arrays);
 
-    if props.keep_metadata {
+    if keep_metadata {
         write_metadata(&mut decompress_info, &mut compress_info);
     }
 

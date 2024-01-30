@@ -6,7 +6,7 @@ use tracing::error;
 use crate::constant::error::OptionError;
 
 use super::{
-    core::{png, webp},
+    core::{jpeg, png, webp},
     utils::mime::{get_filetype_from_path, SupportedFileTypes},
 };
 
@@ -71,7 +71,9 @@ impl ImageCompression {
         self.state = CompressState::Done;
 
         match self.file_type {
-            SupportedFileTypes::Jpeg => {}
+            SupportedFileTypes::Jpeg => {
+                self.mem = jpeg::lib_mozjpeg_sys::index::to_mem(&self.path, false).unwrap();
+            }
             SupportedFileTypes::Png => {
                 self.mem = png::lossless::to_mem(&self.path).unwrap();
             }
