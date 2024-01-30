@@ -11,7 +11,7 @@ pub struct DragFiles {
 }
 
 #[tauri::command]
-pub fn get_drag_files(files: Vec<String>, quality: i8) -> Vec<ImageCompression> {
+pub fn get_drag_files(files: Vec<String>, quality: i32) -> Vec<ImageCompression> {
     files
         .iter()
         .map(|file| {

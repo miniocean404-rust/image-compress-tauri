@@ -12,14 +12,16 @@ use std::{error::Error, io::Write};
 
 use super::common::{error_handler, error_message_handler, set_chroma_subsampling, write_metadata, ChromaSubsampling};
 
-pub fn to_mem(input: &str) -> Result<Vec<u8>, Box<dyn Error>> {
+pub fn to_mem(input: &str, quality: i32) -> Result<Vec<u8>, Box<dyn Error>> {
     let in_file = fs::read(input)?;
 
-    unsafe { catch_unwind(|| -> Result<Vec<u8>, Box<dyn Error>> { lossy(in_file, false, 80, ChromaSubsampling::Auto) }).expect("执行 jpeg_sys panic 了") }
+    unsafe {
+        catch_unwind(|| -> Result<Vec<u8>, Box<dyn Error>> { lossy(in_file, false, quality, ChromaSubsampling::Auto) }).expect("执行 jpeg_sys panic 了")
+    }
 }
 
-pub fn to_file(input: &str, output: &str) -> Result<(), Box<dyn std::error::Error>> {
-    let out_buffer = to_mem(input)?;
+pub fn to_file(input: &str, output: &str, quality: i32) -> Result<(), Box<dyn std::error::Error>> {
+    let out_buffer = to_mem(input, quality)?;
     let mut out_file = File::create(output)?;
     out_file.write_all(&out_buffer)?;
 
@@ -28,22 +30,27 @@ pub fn to_file(input: &str, output: &str) -> Result<(), Box<dyn std::error::Erro
 
 /// # Safety
 pub unsafe fn lossy(mem: Vec<u8>, keep_metadata: bool, quality: i32, chroma_subsampling: ChromaSubsampling) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+    // 创建压缩数据指针
     let mut decompress_info: jpeg_decompress_struct = mem::zeroed();
     let mut compress_info: jpeg_compress_struct = mem::zeroed();
 
+    // 设置解压缩错图提示
     let mut decompress_err = mem::zeroed();
     decompress_info.common.err = jpeg_std_error(&mut decompress_err);
     (*decompress_info.common.err).error_exit = Some(error_handler);
     (*decompress_info.common.err).output_message = Some(error_message_handler);
 
+    // 设置压缩错误提示
     let mut compress_err = mem::zeroed();
     compress_info.common.err = jpeg_std_error(&mut compress_err);
     (*compress_info.common.err).error_exit = Some(error_handler);
     (*compress_info.common.err).output_message = Some(error_message_handler);
 
+    // 初始化压缩解压缩
     jpeg_create_decompress(&mut decompress_info);
     jpeg_create_compress(&mut compress_info);
 
+    // 设置解压缩 vec 数据到 decompress_info
     jpeg_mem_src(&mut decompress_info, mem.as_ptr(), mem.len() as _);
 
     if keep_metadata {

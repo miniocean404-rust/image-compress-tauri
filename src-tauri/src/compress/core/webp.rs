@@ -4,8 +4,8 @@ use std::ops::Deref;
 
 use crate::constant::error::WebpError;
 
-pub fn to_file(input: &str, output_path: &str, is_lossless: bool) -> Result<(), Box<dyn std::error::Error>> {
-    let compressed_image = to_mem(input, is_lossless)?;
+pub fn to_file(input: &str, output_path: &str, is_lossless: bool, quality: f32) -> Result<(), Box<dyn std::error::Error>> {
+    let compressed_image = to_mem(input, is_lossless, quality)?;
 
     let mut output_file = File::create(output_path)?;
 
@@ -14,7 +14,7 @@ pub fn to_file(input: &str, output_path: &str, is_lossless: bool) -> Result<(), 
     Ok(())
 }
 
-pub fn to_mem(input: &str, is_lossless: bool) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
+pub fn to_mem(input: &str, is_lossless: bool, quality: f32) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     let mut input_file = File::open(input)?;
 
     let mut input_data = Vec::new();
@@ -26,7 +26,7 @@ pub fn to_mem(input: &str, is_lossless: bool) -> Result<Vec<u8>, Box<dyn std::er
     let input_image = input_webp.to_image();
 
     let encoder = webp::Encoder::from_image(&input_image).map_err(|_| WebpError::EncodeError)?;
-    let encode = encoder.encode_simple(is_lossless, 75.0).map_err(|_| WebpError::CompressError)?;
+    let encode = encoder.encode_simple(is_lossless, quality).map_err(|_| WebpError::CompressError)?;
 
     Ok(encode.deref().to_vec())
 }

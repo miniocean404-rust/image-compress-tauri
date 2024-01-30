@@ -26,7 +26,7 @@ pub struct ImageCompression {
     pub file_type: SupportedFileTypes,
 
     #[serde(default)]
-    pub quality: i8,
+    pub quality: i32,
 
     // serialize 把 before_size 序列化为 origin | deserialize 把 origin 反序列化为 before_size
     #[serde(default, rename(serialize = "origin", deserialize = "origin"))]
@@ -48,7 +48,7 @@ pub enum CompressState {
 }
 
 impl ImageCompression {
-    pub fn new(path: String, quality: i8) -> Result<Self, Box<dyn std::error::Error>> {
+    pub fn new(path: String, quality: i32) -> Result<Self, Box<dyn std::error::Error>> {
         let file_type = get_filetype_from_path(&path);
 
         let path_buf = PathBuf::from(&path);
@@ -72,13 +72,13 @@ impl ImageCompression {
 
         match self.file_type {
             SupportedFileTypes::Jpeg => {
-                self.mem = jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path).unwrap();
+                self.mem = jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path, self.quality).unwrap();
             }
             SupportedFileTypes::Png => {
                 self.mem = png::lossless::to_mem(&self.path).unwrap();
             }
             SupportedFileTypes::WebP => {
-                self.mem = webp::to_mem(&self.path, true).unwrap();
+                self.mem = webp::to_mem(&self.path, true, self.quality as f32).unwrap();
             }
             SupportedFileTypes::Gif => {}
             SupportedFileTypes::Unknown => {
