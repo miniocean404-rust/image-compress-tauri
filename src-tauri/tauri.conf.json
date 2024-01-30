@@ -7,7 +7,7 @@
     "withGlobalTauri": true
   },
   "package": {
-    "productName": "图片压缩",
+    "productName": "image-compress",
     "version": "0.0.1"
   },
   "tauri": {
