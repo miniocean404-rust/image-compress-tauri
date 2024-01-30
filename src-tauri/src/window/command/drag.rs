@@ -2,6 +2,7 @@ use std::{path::PathBuf, sync::Arc};
 
 use serde::{Deserialize, Serialize};
 use tokio::sync::{mpsc, RwLock};
+use tracing::info;
 
 use crate::compress::{index::ImageCompression, utils::dir::glob_dir};
 

@@ -36,7 +36,7 @@ pub struct ImageCompression {
     pub after_size: usize,
 
     #[serde(default)]
-    pub rate: i8,
+    pub rate: String,
 }
 
 #[derive(Clone, Debug, Default, Serialize, Deserialize)]
@@ -70,20 +70,23 @@ impl ImageCompression {
     pub fn start_mem_compress(&mut self) {
         self.state = CompressState::Done;
 
-        match self.file_type {
-            SupportedFileTypes::Jpeg => {
-                self.mem = jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path, self.quality).unwrap();
-            }
-            SupportedFileTypes::Png => {
-                self.mem = png::lossless::to_mem(&self.path).unwrap();
-            }
-            SupportedFileTypes::WebP => {
-                self.mem = webp::to_mem(&self.path, true, self.quality as f32).unwrap();
-            }
-            SupportedFileTypes::Gif => {}
+        let mem = match self.file_type {
+            SupportedFileTypes::Jpeg => jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path, self.quality).unwrap(),
+            SupportedFileTypes::Png => png::lossless::to_mem(&self.path).unwrap(),
+            SupportedFileTypes::WebP => webp::to_mem(&self.path, true, self.quality as f32).unwrap(),
+            SupportedFileTypes::Gif => Vec::new(),
             SupportedFileTypes::Unknown => {
-                error!("不支持的类型")
+                error!("不支持的类型");
+                return;
             }
-        }
+        };
+
+        self.mem = mem;
+        self.after_size = self.mem.len();
+
+        self.rate = format!(
+            "{:.2}",
+            ((((self.before_size as f32 - self.after_size as f32) / self.before_size as f32) * 1000.0).round() / 1000.0) * 100.0
+        )
     }
 }
