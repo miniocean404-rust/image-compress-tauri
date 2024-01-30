@@ -19,7 +19,7 @@ use image_compress_tauri::{
 use tracing::warn;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    if let Ok(current_dir) = env::current_dir() {
+    if let Ok(current_dir) = std::env::current_dir() {
         println!("Current directory is: {:?}", current_dir);
     }
     let _guard = init_tracing()?;
