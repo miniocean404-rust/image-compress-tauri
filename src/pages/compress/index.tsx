@@ -100,8 +100,11 @@ export default function Home() {
                 <span>{formartFileSize(info.origin) || "--"}</span>
                 <span>{formartFileSize(info.compress) || "--"}</span>
                 <span>{info.rate || "--"}</span>
-                <span className={styles["cell-down"]}>
-                  <p onClick={() => downloadImg(info.mem, info.name, info.type)}>{info.state === CompressState.Done ? "保存" : "--"}</p>
+                <span
+                  className={`${styles.down_file} ${info.state === CompressState.Done && styles.done}`}
+                  onClick={() => downloadImg(info.mem, info.name, info.type)}
+                >
+                  {info.state === CompressState.Done ? "保存" : "--"}
                 </span>
               </div>
             )

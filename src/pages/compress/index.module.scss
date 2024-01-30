@@ -67,13 +67,13 @@
           flex: 1;
         }
 
-        .cell-down {
-          & p {
-            cursor: pointer;
-            text-decoration: none;
-            color: rgb(255, 0, 0);
-            font-size: 12px;
-          }
+        .down_file {
+          color: #f03e3e;
+          font-size: 12px;
+        }
+
+        .done {
+          cursor: pointer;
         }
       }
     }

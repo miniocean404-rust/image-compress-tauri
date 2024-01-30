@@ -19,7 +19,7 @@ use super::time::LocalTimer;
 // 直接初始化，采用默认的Subscriber，默认只输出INFO、WARN、ERROR级别的日志
 // tracing_subscriber::fmt::init();
 
-pub fn init_tracing() -> Result<WorkerGuard, Box<dyn Error>> {
+pub fn init_tracing(path: &str) -> Result<WorkerGuard, Box<dyn Error>> {
     // 使用 tracing_appender，指定日志的输出目标位置
     // 参考: https://docs.rs/tracing-appender/0.2.0/tracing_appender/
 
@@ -28,7 +28,7 @@ pub fn init_tracing() -> Result<WorkerGuard, Box<dyn Error>> {
     let my_create = env!("CARGO_PKG_NAME").replace('-', "_");
     let filter = EnvFilter::from_default_env().add_directive(my_create.parse()?);
 
-    let file_appender = tracing_appender::rolling::daily("./logs", "tracing.log");
+    let file_appender = tracing_appender::rolling::daily(path, "tracing.log");
     // 如果 non_blocking 不在 main 中，需要把 guard 返回给 main
     let (_non_blocking, guard) = tracing_appender::non_blocking(file_appender);
 

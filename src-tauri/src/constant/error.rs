@@ -8,6 +8,9 @@ use thiserror::Error;
 pub enum TauriError {
     #[error("没有获取窗口")]
     NoWindow,
+
+    #[error("没有获取路径")]
+    NoPath,
 }
 
 #[derive(Error, Debug)]

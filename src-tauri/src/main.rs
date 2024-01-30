@@ -5,7 +5,6 @@ use std::error::Error;
 
 use image_compress_tauri::{
     __cmd__close_splashscreen, __cmd__get_drag_files, __cmd__start_compress,
-    utils::log::tracing::init_tracing,
     window::command::{
         drag::{get_drag_files, start_compress},
         splash::close_splashscreen,
@@ -19,11 +18,6 @@ use image_compress_tauri::{
 use tracing::warn;
 
 fn main() -> Result<(), Box<dyn Error>> {
-    if let Ok(current_dir) = std::env::current_dir() {
-        println!("Current directory is: {:?}", current_dir);
-    }
-    let _guard = init_tracing()?;
-
     let rt = tokio::runtime::Builder::new_multi_thread()
         // 开启所有特性
         .enable_all()
@@ -40,6 +34,7 @@ fn main() -> Result<(), Box<dyn Error>> {
 
 async fn async_main() -> Result<(), Box<dyn Error>> {
     tauri::Builder::default()
+        // 定义安装 hook
         .setup(setup)
         .system_tray(create_sys_tray())
         .on_system_tray_event(system_tray_event)
