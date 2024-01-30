@@ -35,7 +35,7 @@ debug-assertions = false
 tauri-build = { version = "1.5", features = [] }
 
 [dependencies]
-tauri = { version = "1.5", features = [ "os-all", "window-start-dragging", "system-tray", "notification-all", "global-shortcut-all", "clipboard-all", "fs-all", "updater", "shell-open"] }
+tauri = { version = "1.5.4", features = [ "os-all", "window-start-dragging", "system-tray", "notification-all", "global-shortcut-all", "clipboard-all", "fs-all", "updater", "shell-open"] }
 
 # 无损压缩 png (optipng、oxipng)
 oxipng = "9.0.0"
