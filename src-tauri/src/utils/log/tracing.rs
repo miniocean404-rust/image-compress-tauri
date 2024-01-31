@@ -2,7 +2,6 @@
 
 use std::{error::Error, io};
 
-use tracing::info;
 use tracing_appender::non_blocking::WorkerGuard;
 use tracing_subscriber::{
     fmt::{
