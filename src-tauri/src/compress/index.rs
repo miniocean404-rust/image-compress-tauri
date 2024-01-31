@@ -1,6 +1,7 @@
 use std::{fs, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
+use tokio::{fs::File, io::AsyncWriteExt};
 use tracing::error;
 
 use crate::constant::error::OptionError;
@@ -67,7 +68,7 @@ impl ImageCompression {
         })
     }
 
-    pub fn start_mem_compress(&mut self) {
+    pub async fn start_mem_compress(&mut self, is_cover: bool) -> Result<(), Box<dyn std::error::Error>> {
         self.state = CompressState::Done;
 
         let mem = match self.file_type {
@@ -77,7 +78,7 @@ impl ImageCompression {
             SupportedFileTypes::Gif => Vec::new(),
             SupportedFileTypes::Unknown => {
                 error!("不支持的类型");
-                return;
+                return Ok(());
             }
         };
 
@@ -87,6 +88,13 @@ impl ImageCompression {
         self.rate = format!(
             "{:.2}",
             ((((self.before_size as f32 - self.after_size as f32) / self.before_size as f32) * 1000.0).round() / 1000.0) * 100.0
-        )
+        );
+
+        if is_cover {
+            let mut output_file = File::create(&self.path).await?;
+            output_file.write_all(self.mem.as_slice()).await?;
+        };
+
+        Ok(())
     }
 }

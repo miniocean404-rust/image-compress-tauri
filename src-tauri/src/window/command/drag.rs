@@ -27,8 +27,8 @@ pub fn get_drag_files(files: Vec<String>, quality: i32) -> Vec<ImageCompression>
         .collect::<Vec<ImageCompression>>()
 }
 
-#[tauri::command]
-pub async fn start_compress(info: ImageCompression) -> ImageCompression {
+#[tauri::command(rename_all = "snake_case")]
+pub async fn start_compress(info: ImageCompression, is_cover: bool) -> ImageCompression {
     let (tx, mut r) = mpsc::channel::<ImageCompression>(1);
 
     let arc_info = Arc::new(RwLock::new(info));
@@ -36,8 +36,7 @@ pub async fn start_compress(info: ImageCompression) -> ImageCompression {
 
     tokio::spawn(async move {
         let mut rw_info = clone_info.write().await;
-        rw_info.start_mem_compress();
-
+        rw_info.start_mem_compress(is_cover).await.unwrap();
         tx.send(rw_info.to_owned()).await.unwrap();
     });
 

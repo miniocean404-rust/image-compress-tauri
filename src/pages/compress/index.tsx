@@ -29,6 +29,7 @@ export default function Home() {
   const [isHover, setIsHover] = useState<boolean>(false)
   const [list, setList] = useState<ImageCompreessInfo[]>([])
   const [quality, setQuality] = useState<number>(80)
+  const [isCover, setIsCover] = useState<boolean>(false)
 
   useMount(async () => {
     // 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
@@ -47,7 +48,7 @@ export default function Home() {
 
           for (let index = 0; index < list.length; index++) {
             const info = list[index]
-            invoke<ImageCompreessInfo>("start_compress", { info }).then((done) => {
+            invoke<ImageCompreessInfo>("start_compress", { info, isCover }).then((done) => {
               list[index] = info.path === done.path ? done : info
               setList([...list])
             })
@@ -67,6 +68,10 @@ export default function Home() {
   }
   const handleClear = () => {
     setList([])
+  }
+
+  const handleCover = () => {
+    setIsCover(!isCover)
   }
 
   const handleDownload = () => {}
@@ -124,6 +129,11 @@ export default function Home() {
           <div className={styles.btn} onClick={handleClear}>
             清除列表
           </div>
+
+          <div className={styles.btn} onClick={handleCover}>
+            {isCover ? "覆盖" : "不覆盖"}
+          </div>
+
           <div className={styles.btn} onClick={handleDownload}>
             一键打包
           </div>
