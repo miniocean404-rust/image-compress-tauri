@@ -66,7 +66,9 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        platform: [macos-latest, ubuntu-latest, windows-latest]
+        # platform: [macos-latest, ubuntu-latest, windows-latest]
+        # 暂时因为 tauri 配置 productName 无法正确打包中文名称，暂时取消 ubuntu
+        platform: [macos-latest, windows-latest]
 
     runs-on: ${{ matrix.platform }}
     steps:
@@ -97,7 +99,7 @@ jobs:
 
       # 会自动生成补丁文件 latest.json
       - name: 构建 Tauri
-        uses: tauri-apps/tauri-action@v0
+        uses: tauri-apps/tauri-action@v0.4
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_PRIVATE_KEY: ${{ secrets.TAURI_PRIVATE_KEY }}
