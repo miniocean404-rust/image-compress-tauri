@@ -72,7 +72,13 @@ impl ImageCompression {
         self.state = CompressState::Done;
 
         let mem = match self.file_type {
-            SupportedFileTypes::Jpeg => jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path, self.quality).unwrap(),
+            SupportedFileTypes::Jpeg => {
+                let file = fs::read(&self.path).unwrap();
+                // unsafe {
+                //     jpeg::test::optimize_lossless_jpeg(&file).unwrap();
+                // }
+                jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path, self.quality).unwrap()
+            }
             SupportedFileTypes::Png => {
                 // 有损加无损压缩 Png
                 let file = fs::read(&self.path).unwrap();
