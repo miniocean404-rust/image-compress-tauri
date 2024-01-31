@@ -25,6 +25,7 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn Error>> {
 
     // 日志路径 windows ：C:\\Users\\ta\\AppData\\Roaming\\com.miniocean.compress.image\\logs
     // Mac: /Users/user/Library/Logs/com.miniocean.compress.image
+    // 打包需要开启 tauri 的 tracing
     let _guard = init_tracing(log_path)?;
 
     let cwd = std::env::current_dir()?;
