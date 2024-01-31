@@ -1,6 +1,6 @@
 use libc::{c_ulong, free};
 use mozjpeg_sys::{
-    boolean, c_int, c_void, jpeg_compress_struct, jpeg_create_compress, jpeg_create_decompress, jpeg_decompress_struct, jpeg_destroy_compress,
+    boolean, c_void, jpeg_compress_struct, jpeg_create_compress, jpeg_create_decompress, jpeg_decompress_struct, jpeg_destroy_compress,
     jpeg_destroy_decompress, jpeg_finish_compress, jpeg_finish_decompress, jpeg_mem_dest, jpeg_mem_src, jpeg_read_header, jpeg_read_scanlines,
     jpeg_save_markers, jpeg_set_defaults, jpeg_set_quality, jpeg_start_compress, jpeg_start_decompress, jpeg_std_error, jpeg_write_scanlines, J_DCT_METHOD,
 };
