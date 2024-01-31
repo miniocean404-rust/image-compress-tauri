@@ -48,7 +48,8 @@ export default function Home() {
 
           for (let index = 0; index < list.length; index++) {
             const info = list[index]
-            invoke<ImageCompreessInfo>("start_compress", { info, isCover }).then((done) => {
+
+            invoke<ImageCompreessInfo>("start_compress", { info, is_cover: isCover }).then((done) => {
               list[index] = info.path === done.path ? done : info
               setList([...list])
             })

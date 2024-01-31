@@ -2,7 +2,7 @@ use std::{fs, path::PathBuf};
 
 use serde::{Deserialize, Serialize};
 use tokio::{fs::File, io::AsyncWriteExt};
-use tracing::error;
+use tracing::{error, info};
 
 use crate::constant::error::OptionError;
 
@@ -92,6 +92,7 @@ impl ImageCompression {
 
         if is_cover {
             let mut output_file = File::create(&self.path).await?;
+            info!(output_file=?output_file);
             output_file.write_all(self.mem.as_slice()).await?;
         };
 
