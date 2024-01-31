@@ -12,10 +12,6 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn Error>> {
     // let _docs_window = tauri::WindowBuilder::new(app, "external", tauri::WindowUrl::External("https://tauri.app/".parse()?)).build()?;
     // let _local_window = tauri::WindowBuilder::new(app, "local", tauri::WindowUrl::App("splash.html".into())).build()?;
 
-    if let Ok(current_dir) = std::env::current_dir() {
-        println!("Current directory is: {:?}", current_dir);
-    }
-
     let log_path_buf = app.path_resolver().app_log_dir().ok_or(TauriError::NoPath)?;
     let mut log_path = log_path_buf.to_str().ok_or(TauriError::NoPath)?;
 
