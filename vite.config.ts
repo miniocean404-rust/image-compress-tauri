@@ -2,6 +2,8 @@ import { defineConfig, loadEnv, normalizePath, searchForWorkspaceRoot } from "vi
 import react from "@vitejs/plugin-react"
 import { fileURLToPath, URL } from "node:url"
 
+import { CodeInspectorPlugin } from "code-inspector-plugin"
+
 // https://vitejs.dev/config/
 export default defineConfig((config) => {
   const isDev = config.mode === "development"
@@ -13,7 +15,7 @@ export default defineConfig((config) => {
   const env = loadEnv(config.mode, process.cwd())
 
   return {
-    plugins: [react()],
+    plugins: [react(), CodeInspectorPlugin({ bundler: "vite" })],
 
     // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
     //

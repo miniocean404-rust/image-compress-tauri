@@ -1,4 +1,4 @@
 pub mod compress;
-pub mod constant;
+pub mod shared;
 pub mod utils;
 pub mod window;

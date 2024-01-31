@@ -4,7 +4,7 @@ use serde::{Deserialize, Serialize};
 use tokio::{fs::File, io::AsyncWriteExt};
 use tracing::{error, info};
 
-use crate::constant::error::OptionError;
+use crate::shared::error::OptionError;
 
 use super::{
     core::{jpeg, png, webp},
@@ -73,8 +73,13 @@ impl ImageCompression {
 
         let mem = match self.file_type {
             SupportedFileTypes::Jpeg => jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path, self.quality).unwrap(),
-            SupportedFileTypes::Png => png::lossless::to_mem(&self.path).unwrap(),
-            SupportedFileTypes::WebP => webp::to_mem(&self.path, true, self.quality as f32).unwrap(),
+            SupportedFileTypes::Png => {
+                // 有损加无损压缩 Png
+                let file = fs::read(&self.path).unwrap();
+                let lossless_mem = png::lossless::to_mem(&file).unwrap();
+                png::lossy::to_mem(&lossless_mem, self.quality).unwrap()
+            }
+            SupportedFileTypes::WebP => webp::to_mem(&self.path, false, self.quality as f32).unwrap(),
             SupportedFileTypes::Gif => Vec::new(),
             SupportedFileTypes::Unknown => {
                 error!("不支持的类型");

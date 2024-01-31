@@ -102,6 +102,15 @@
           font-size: $input_font_size;
           line-height: $input_line_height;
           border: $input_border;
+
+          &[type="number"]::-webkit-inner-spin-button,
+          &[type="number"]::-webkit-outer-spin-button {
+            -webkit-appearance: none;
+            margin: 0;
+          }
+          &[type="number"] {
+            -moz-appearance: textfield;
+          }
         }
 
         .quality_num {

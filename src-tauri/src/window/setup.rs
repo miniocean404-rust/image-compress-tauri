@@ -4,7 +4,7 @@ use tauri::App;
 use tracing::info;
 
 use crate::{
-    constant::error::TauriError,
+    shared::error::TauriError,
     utils::{debug::is_debug, log::tracing::init_tracing},
 };
 

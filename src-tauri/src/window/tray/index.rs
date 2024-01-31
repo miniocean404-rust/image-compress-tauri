@@ -2,7 +2,7 @@ use std::error::Error;
 
 use tauri::{AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
 
-use crate::constant::error::TauriError;
+use crate::shared::error::TauriError;
 
 pub fn create_sys_tray() -> SystemTray {
     let show = CustomMenuItem::new("show".to_string(), "显示");

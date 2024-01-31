@@ -1876,6 +1876,7 @@ dependencies = [
 name = "image-compress-tauri"
 version = "0.0.3"
 dependencies = [
+ "anyhow",
  "chrono",
  "gifsicle",
  "globset",

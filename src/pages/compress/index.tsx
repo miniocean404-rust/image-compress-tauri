@@ -1,5 +1,5 @@
 import styles from "./index.module.scss"
-import { useRef, useState } from "react"
+import { useEffect, useRef, useState } from "react"
 import { useUnmount, useMount } from "ahooks"
 
 import SimpleBar from "simplebar-react"
@@ -31,44 +31,43 @@ export default function Home() {
   const [quality, setQuality] = useState<number>(80)
   const [isCover, setIsCover] = useState<boolean>(false)
 
-  useMount(async () => {
-    // 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
-    unlistenRef.current = await appWindow.onFileDropEvent(async (event) => {
-      switch (event.payload.type) {
-        case "hover":
-          setIsHover(true)
-          break
-        case "cancel":
-          setIsHover(false)
-          break
-        case "drop":
-          setIsHover(false)
-          const list = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
-          setList(list)
+  useEffect(() => {
+    ;(async function () {
+      // 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
+      unlistenRef.current = await appWindow.onFileDropEvent(async (event) => {
+        switch (event.payload.type) {
+          case "hover":
+            setIsHover(true)
+            break
+          case "cancel":
+            setIsHover(false)
+            break
+          case "drop":
+            setIsHover(false)
+            const list = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
+            setList(list)
 
-          for (let index = 0; index < list.length; index++) {
-            const info = list[index]
+            for (let index = 0; index < list.length; index++) {
+              const info = list[index]
 
-            invoke<ImageCompreessInfo>("start_compress", { info, is_cover: isCover }).then((done) => {
-              list[index] = info.path === done.path ? done : info
-              setList([...list])
-            })
-          }
+              invoke<ImageCompreessInfo>("start_compress", { info, is_cover: isCover }).then((done) => {
+                list[index] = info.path === done.path ? done : info
+                setList([...list])
+              })
+            }
 
-          break
-      }
-    })
-  })
+            break
+        }
+      })
+    })()
 
-  useUnmount(() => {
-    unlistenRef.current && unlistenRef.current()
-  })
+    return () => {
+      unlistenRef.current && unlistenRef.current()
+    }
+  }, [isCover, quality])
 
   const getQuality = (e) => {
-    setQuality(e.target.value)
-  }
-  const handleClear = () => {
-    setList([])
+    setQuality(Number(e.target.value))
   }
 
   const handleCover = () => {
@@ -124,11 +123,7 @@ export default function Home() {
         <div className={styles.action}>
           <div className={styles.quality_box}>
             <span>质量</span>
-            <input className={styles.silder} value={quality} onChange={getQuality} />%
-          </div>
-
-          <div className={styles.btn} onClick={handleClear}>
-            清除列表
+            <input className={styles.silder} type='number' min={1} max={100} required value={quality} onChange={getQuality} />%
           </div>
 
           <div className={styles.btn} onClick={handleCover}>

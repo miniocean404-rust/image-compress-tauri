@@ -2,7 +2,7 @@ use std::fs::File;
 use std::io::{Read, Write};
 use std::ops::Deref;
 
-use crate::constant::error::WebpError;
+use crate::shared::error::WebpError;
 
 pub fn to_file(input: &str, output_path: &str, is_lossless: bool, quality: f32) -> Result<(), Box<dyn std::error::Error>> {
     let compressed_image = to_mem(input, is_lossless, quality)?;

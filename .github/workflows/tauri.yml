@@ -66,9 +66,8 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        # platform: [macos-latest, ubuntu-latest, windows-latest]
-        # 暂时因为 tauri 配置 productName 无法正确打包中文名称，暂时取消 ubuntu
-        platform: [macos-latest, windows-latest]
+        # linux 因为 tauri 配置 productName 无法正确打包中文名称,所以只能配置英文
+        platform: [macos-latest, ubuntu-latest, windows-latest]
 
     runs-on: ${{ matrix.platform }}
     steps:

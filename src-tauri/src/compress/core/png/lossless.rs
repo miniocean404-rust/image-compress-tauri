@@ -19,7 +19,9 @@ pub fn to_file(input: &str, output: &str) -> Result<(), Box<dyn std::error::Erro
     //     &options,
     // )?;
 
-    let png_vec = to_mem(input)?;
+    let in_file = fs::read(input)?;
+
+    let png_vec = to_mem(&in_file)?;
 
     // 写入文件
     let mut output_file = File::create(output)?;
@@ -28,14 +30,12 @@ pub fn to_file(input: &str, output: &str) -> Result<(), Box<dyn std::error::Erro
     Ok(())
 }
 
-pub fn to_mem(input: &str) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-    let in_file = fs::read(input)?;
-
+pub fn to_mem(mem: &Vec<u8>) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
     // let mut oxipng_options = oxipng::Options::default();
     // oxipng_options.deflate = Zopfli { iterations: NonZeroU8::new(15).ok_or("")?};
     let mut oxipng_options = Options::from_preset(6);
     oxipng_options.deflate = Libdeflater { compression: 6 };
-    let png_vec = oxipng::optimize_from_memory(in_file.as_slice(), &oxipng_options)?;
+    let png_vec = oxipng::optimize_from_memory(mem.as_slice(), &oxipng_options)?;
 
     Ok(png_vec)
 }
