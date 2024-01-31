@@ -15,17 +15,17 @@ pub fn to_file(input: &str, output_path: &str, is_lossless: bool, quality: f32) 
 }
 
 pub fn to_mem(input: &str, is_lossless: bool, quality: f32) -> Result<Vec<u8>, Box<dyn std::error::Error>> {
-    let mut input_file = File::open(input)?;
+    let mut file = File::open(input)?;
 
-    let mut input_data = Vec::new();
-    input_file.read_to_end(&mut input_data)?;
+    let mut data = Vec::new();
+    file.read_to_end(&mut data)?;
 
-    let decoder = webp::Decoder::new(&input_data);
+    let decoder = webp::Decoder::new(&data);
 
-    let input_webp = decoder.decode().ok_or(WebpError::DecodeError)?;
-    let input_image = input_webp.to_image();
+    let decode_webp = decoder.decode().ok_or(WebpError::DecodeError)?;
+    let image = decode_webp.to_image();
 
-    let encoder = webp::Encoder::from_image(&input_image).map_err(|_| WebpError::EncodeError)?;
+    let encoder = webp::Encoder::from_image(&image).map_err(|_| WebpError::EncodeError)?;
     let encode = encoder.encode_simple(is_lossless, quality).map_err(|_| WebpError::CompressError)?;
 
     Ok(encode.deref().to_vec())
