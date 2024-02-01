@@ -1,19 +1,14 @@
-use oxipng::OutFile;
 use serde::{Deserialize, Serialize};
 use std::{
-    any::Any,
     fs,
-    future::Future,
     path::{Path, PathBuf},
-    process::Output,
     sync::Arc,
 };
-use tokio::sync::{mpsc, oneshot, RwLock};
+use tokio::sync::{oneshot, RwLock};
 
 use crate::{
     compress::{index::ImageCompression, utils::dir::glob_dir},
     shared::error::TauriError,
-    utils::pool::TokioPool,
 };
 
 #[derive(Serialize, Deserialize)]
