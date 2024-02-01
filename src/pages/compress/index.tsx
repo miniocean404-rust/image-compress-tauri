@@ -104,7 +104,7 @@ export default function Home() {
                 <span>{CompressStateChinese[info.state] || "--"}</span>
                 <span>{formartFileSize(info.origin) || "--"}</span>
                 <span>{formartFileSize(info.compress) || "--"}</span>
-                <span>{info.rate || "--"}</span>
+                <span>{info.rate + "%" || "--"}</span>
                 <span
                   className={`${styles.down_file} ${info.state === CompressState.Done && styles.done}`}
                   onClick={() => downloadImg(info.mem, info.name, info.type)}

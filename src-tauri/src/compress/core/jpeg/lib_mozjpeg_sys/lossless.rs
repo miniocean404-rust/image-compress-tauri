@@ -1,5 +1,6 @@
 use mozjpeg_sys::*;
 use std::{mem, ptr, slice};
+use tracing::info;
 
 use super::common::{set_chroma_subsampling, write_metadata, ChromaSubsampling};
 
@@ -155,7 +156,7 @@ pub fn optimize_lossy_jpeg(bytes: &[u8], quality: i32, keep_metadata: bool, chro
             // 第三个参数表示是否启用平滑功能
             jpeg_set_quality(&mut info.dstinfo, quality, false as boolean);
 
-            jpeg_start_compress(&mut info.dstinfo, false as boolean);
+            jpeg_start_compress(&mut info.dstinfo, true as boolean);
 
             if keep_metadata {
                 write_metadata(&mut info.srcinfo, &mut info.dstinfo);
