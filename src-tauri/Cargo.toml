@@ -60,6 +60,10 @@ svgtypes = "0.13.0"
 cocoa = { version = "0.25.0" }
 winapi = "0.3.9"
 
+windows = "0.52.0"
+webview2-com = "0.28.0"
+
+
 # 推断文件类型
 infer = "0.15.0"
 
