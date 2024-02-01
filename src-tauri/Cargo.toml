@@ -57,6 +57,9 @@ webp = "0.2.6" # 底层使用的是 rust libwebp-sys
 # 处理 svg
 svgtypes = "0.13.0"
 
+cocoa = { version = "0.25.0" }
+winapi = "0.3.9"
+
 # 推断文件类型
 infer = "0.15.0"
 
