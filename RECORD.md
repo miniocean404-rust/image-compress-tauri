@@ -8,6 +8,7 @@
 - 游戏登录器（进度条）：https://juejin.cn/post/7212819399115489335
 - todo demo: https://juejin.cn/post/7093164755275218981
 - 效率小工具：https://juejin.cn/post/7194780452106797117?searchId=202401262153271E54F50BC6C4D84DB7CE
+- tauri 包装 tokio 异步运行时：https://juejin.cn/post/7223325932357894199
 
 # 官方文档
 

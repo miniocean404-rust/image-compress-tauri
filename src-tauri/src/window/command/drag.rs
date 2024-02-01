@@ -8,7 +8,7 @@ use std::{
     process::Output,
     sync::Arc,
 };
-use tokio::sync::{mpsc, RwLock};
+use tokio::sync::{mpsc, oneshot, RwLock};
 
 use crate::{
     compress::{index::ImageCompression, utils::dir::glob_dir},
@@ -54,7 +54,7 @@ pub fn get_drag_files(files: Vec<String>, quality: i32) -> Result<Vec<ImageCompr
 
 #[tauri::command(rename_all = "snake_case")]
 pub async fn start_compress(info: ImageCompression, is_cover: bool) -> Result<ImageCompression, TauriError> {
-    let (tx, mut r) = mpsc::channel::<ImageCompression>(1);
+    let (tx, r) = oneshot::channel::<ImageCompression>();
 
     let arc_info = Arc::new(RwLock::new(info));
     let clone_info = Arc::clone(&arc_info);
@@ -67,8 +67,8 @@ pub async fn start_compress(info: ImageCompression, is_cover: bool) -> Result<Im
     tokio::spawn(async move {
         let mut rw_info = clone_info.write().await;
         rw_info.start_mem_compress(is_cover).await.unwrap();
-        tx.send(rw_info.to_owned()).await.unwrap();
+        tx.send(rw_info.to_owned()).unwrap();
     });
 
-    r.recv().await.ok_or(TauriError::NoValue)
+    r.await.map_err(|_| TauriError::NoValue)
 }

@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use tauri::App;
+use tauri::{App, Manager};
 use tracing::info;
 
 use crate::{
@@ -28,5 +28,16 @@ pub fn setup(app: &mut App) -> Result<(), Box<dyn Error>> {
 
     info!("process.cwd(): ------------ {:?}", cwd);
 
+    let handle = app.handle();
+    rs2js("hello".to_string(), &handle);
+
     Ok(())
+}
+
+// rust 发送事件
+// A function that sends a message from Rust to JavaScript via a Tauri Event
+fn rs2js<R: tauri::Runtime>(message: String, manager: &impl Manager<R>) {
+    // tauri 包装 tokio 异步运行时：https://juejin.cn/post/7223325932357894199
+    // tauri::async_runtime::set(tokio::runtime::Handle::current());
+    manager.emit_all("event-name", message).unwrap();
 }
