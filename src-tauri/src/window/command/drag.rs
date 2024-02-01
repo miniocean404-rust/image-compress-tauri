@@ -1,5 +1,6 @@
 use serde::{Deserialize, Serialize};
 use std::{
+    any::Any,
     fs,
     path::{Path, PathBuf},
     sync::Arc,
@@ -9,6 +10,7 @@ use tokio::sync::{mpsc, RwLock};
 use crate::{
     compress::{index::ImageCompression, utils::dir::glob_dir},
     shared::error::TauriError,
+    utils::pool::TokioPool,
 };
 
 #[derive(Serialize, Deserialize)]
