@@ -7,7 +7,10 @@ use tracing::{error, info};
 use crate::shared::error::OptionError;
 
 use super::{
-    core::{jpeg, png, webp},
+    core::{
+        jpeg::{self, lib_mozjpeg_sys::common::ChromaSubsampling},
+        png, webp,
+    },
     utils::mime::{get_filetype_from_path, SupportedFileTypes},
 };
 
@@ -74,10 +77,8 @@ impl ImageCompression {
         let mem = match self.file_type {
             SupportedFileTypes::Jpeg => {
                 let file = fs::read(&self.path).unwrap();
-                // unsafe {
-                //     jpeg::test::optimize_lossless_jpeg(&file).unwrap();
-                // }
-                jpeg::lib_mozjpeg_sys::lossy::to_mem(&self.path, self.quality).unwrap()
+                let mem = jpeg::lib_mozjpeg_sys::lossless::optimize_lossy_jpeg(&file, self.quality, false, ChromaSubsampling::CS420).unwrap();
+                mem.to_vec()
             }
             SupportedFileTypes::Png => {
                 // 有损加无损压缩 Png
