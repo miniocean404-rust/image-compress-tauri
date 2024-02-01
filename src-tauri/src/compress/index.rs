@@ -77,8 +77,8 @@ impl ImageCompression {
         let mem = match self.file_type {
             SupportedFileTypes::Jpeg => {
                 let file = fs::read(&self.path).unwrap();
-                let mem = jpeg::lib_mozjpeg_sys::lossless::optimize_lossy_jpeg(&file, self.quality, false, ChromaSubsampling::CS420).unwrap();
-                // let mem = jpeg::lib_mozjpeg_sys::lossless::optimize_lossless_jpeg(&file, false).unwrap();
+                // let mem = jpeg::lib_mozjpeg_sys::lossless::optimize_lossy_jpeg(&file, self.quality, false, ChromaSubsampling::CS420).unwrap();
+                let mem = jpeg::lib_mozjpeg_sys::index::optimize_lossless_jpeg(&file, false).unwrap();
                 mem.to_vec()
             }
             SupportedFileTypes::Png => {

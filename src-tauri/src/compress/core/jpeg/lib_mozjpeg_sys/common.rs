@@ -1,6 +1,4 @@
-use std::ffi::c_int;
-
-use mozjpeg_sys::{jpeg_common_struct, jpeg_compress_struct, jpeg_decompress_struct, jpeg_write_marker};
+use mozjpeg_sys::{jpeg_compress_struct, jpeg_decompress_struct, jpeg_write_marker};
 
 #[derive(Copy, Clone, PartialEq)]
 pub enum ChromaSubsampling {
@@ -45,12 +43,3 @@ pub(crate) unsafe fn write_metadata(src_info: &mut jpeg_decompress_struct, dst_i
         marker = (*marker).next;
     }
 }
-
-static mut JPEG_ERROR: c_int = 0;
-
-pub(crate) unsafe extern "C-unwind" fn error_handler(cinfo: &mut jpeg_common_struct) {
-    JPEG_ERROR = (*cinfo.err).msg_code;
-    panic!("内部 JPEG 错误: {}", JPEG_ERROR);
-}
-
-pub(crate) unsafe extern "C-unwind" fn error_message_handler(_cinfo: &mut jpeg_common_struct) {}
