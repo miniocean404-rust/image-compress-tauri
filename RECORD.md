@@ -1,3 +1,7 @@
+## Core 文章
+
+// 编解码参考：https://github.com/imazen/imageflow/blob/9ca1dbd50c7390d5953d711bf78b49ea5217aa60/imageflow_core/src/codecs/mozjpeg_decoder.rs#L17
+
 ## 学习文章地址
 
 - splash:https://juejin.cn/post/7067342513920540686#heading-8

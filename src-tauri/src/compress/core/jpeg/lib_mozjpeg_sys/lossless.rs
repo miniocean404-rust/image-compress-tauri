@@ -26,7 +26,6 @@ impl Drop for JPEGOptimizer {
     }
 }
 
-// https://github.com/imazen/imageflow/blob/9ca1dbd50c7390d5953d711bf78b49ea5217aa60/imageflow_core/src/codecs/mozjpeg_decoder.rs#L17
 // This function losslessly optimizes jpegs.
 // Based on the jpegtran.c example program in libjpeg.
 pub fn optimize_lossless_jpeg(bytes: &[u8], keep_metadata: bool) -> std::thread::Result<&mut [u8]> {
