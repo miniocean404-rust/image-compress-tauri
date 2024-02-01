@@ -44,15 +44,15 @@ export default function Home() {
             break
           case "drop":
             setIsHover(false)
-            const list = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
-            setList(list)
+            const infos = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
+            setList([...list, ...infos])
 
-            for (let index = 0; index < list.length; index++) {
-              const info = list[index]
+            for (let index = 0; index < infos.length; index++) {
+              const info = infos[index]
 
               invoke<ImageCompreessInfo>("start_compress", { info, is_cover: isCover }).then((done) => {
-                list[index] = info.path === done.path ? done : info
-                setList([...list])
+                infos[index] = info.path === done.path ? done : info
+                setList([...list, ...infos])
               })
             }
 
@@ -64,7 +64,7 @@ export default function Home() {
     return () => {
       unlistenRef.current && unlistenRef.current()
     }
-  }, [isCover, quality])
+  }, [isCover, quality, list])
 
   const getQuality = (e) => {
     setQuality(Number(e.target.value))
@@ -72,6 +72,10 @@ export default function Home() {
 
   const handleCover = () => {
     setIsCover(!isCover)
+  }
+
+  const handleClear = () => {
+    setList([])
   }
 
   const handleDownload = () => {}
@@ -123,7 +127,11 @@ export default function Home() {
         <div className={styles.action}>
           <div className={styles.quality_box}>
             <span>质量</span>
-            <input className={styles.silder} type='number' min={1} max={100} required value={quality} onChange={getQuality} />%
+            <input className={styles.silder} type='number' min={"1"} max={"100"} required value={quality} onChange={getQuality} />%
+          </div>
+
+          <div className={styles.btn} onClick={handleClear}>
+            清理
           </div>
 
           <div className={styles.btn} onClick={handleCover}>
