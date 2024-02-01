@@ -18,13 +18,13 @@ function DefaultLayout({ children }: PropsWithChildren<any>): ReactNode {
   return (
     <div className={styles.layouBox}>
       {/* 需要开启 allowlist.windows.startDragging = true */}
-      {isMac && (
+      {/* {isMac && (
         <div className='clearfix'>
           <div data-tauri-drag-region className={`${styles.header} `}></div>
         </div>
-      )}
+      )} */}
 
-      <div className={isMac ? styles.routerWindowsBox : styles.routerMacBox}>
+      <div className={styles.routerWindowsBox}>
         <ScrollRestoration getKey={(location, matches) => location.pathname} />
         <Outlet />
       </div>

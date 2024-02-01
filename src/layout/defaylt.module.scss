@@ -27,12 +27,6 @@ $title_bar_height: 30px;
 
   .routerWindowsBox {
     @include router-box {
-      height: calc(100% - $title_bar_height);
-    }
-  }
-
-  .routerMacBox {
-    @include router-box {
       height: 100%;
     }
   }
