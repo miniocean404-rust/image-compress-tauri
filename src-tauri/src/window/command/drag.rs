@@ -1,8 +1,11 @@
+use oxipng::OutFile;
 use serde::{Deserialize, Serialize};
 use std::{
     any::Any,
     fs,
+    future::Future,
     path::{Path, PathBuf},
+    process::Output,
     sync::Arc,
 };
 use tokio::sync::{mpsc, RwLock};
@@ -55,6 +58,11 @@ pub async fn start_compress(info: ImageCompression, is_cover: bool) -> Result<Im
 
     let arc_info = Arc::new(RwLock::new(info));
     let clone_info = Arc::clone(&arc_info);
+
+    // 添加任务池
+    // let mut pool = TokioPool::new(20);
+    // let t = async {};
+    // pool.start_task(vec![t]).await;
 
     tokio::spawn(async move {
         let mut rw_info = clone_info.write().await;

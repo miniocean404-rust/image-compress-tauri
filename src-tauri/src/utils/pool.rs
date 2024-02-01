@@ -8,14 +8,16 @@ pub struct TokioPool<T> {
     pub sets: JoinSet<T>,
 }
 
-impl<T: 'static> TokioPool<T> {
-    pub async fn new(max: usize) -> Self {
+impl<T> TokioPool<T> {
+    pub fn new(max: usize) -> Self {
         Self {
             max_task: max,
             sets: JoinSet::new(),
         }
     }
+}
 
+impl<T: 'static> TokioPool<T> {
     pub async fn start_task<F>(&mut self, tasks: Vec<F>)
     where
         F: Future<Output = T>,
