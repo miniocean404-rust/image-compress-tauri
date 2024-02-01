@@ -81,6 +81,21 @@ unsafe fn create_error_handler() -> jpeg_error_mgr {
     err
 }
 
-extern "C-unwind" fn unwind_error_exit(cinfo: &mut jpeg_common_struct) {}
+// 处理错误退出消息
+extern "C-unwind" fn unwind_error_exit(cinfo: &mut jpeg_common_struct) {
+    let message = unsafe {
+        let err = cinfo.err.as_ref().unwrap();
+        match err.format_message {
+            Some(fmt) => {
+                let buffer = mem::zeroed();
+                fmt(cinfo, &buffer);
+                let len = buffer.iter().take_while(|&&c| c != 0).count();
+                String::from_utf8_lossy(&buffer[..len]).into()
+            }
+            None => format!("libjpeg error: {}", err.msg_code),
+        }
+    };
+    std::panic::resume_unwind(Box::new(message))
+}
 
 extern "C-unwind" fn silence_message(_cinfo: &mut jpeg_common_struct, _level: c_int) {}
