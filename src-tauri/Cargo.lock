@@ -1943,6 +1943,7 @@ dependencies = [
  "lodepng",
  "mozjpeg",
  "mozjpeg-sys",
+ "num_cpus",
  "oxipng",
  "serde",
  "serde_json",

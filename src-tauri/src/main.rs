@@ -1,7 +1,7 @@
 // Prevents additional console window on Windows in release, DO NOT REMOVE!!
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
-use std::error::Error;
+use std::{env, error::Error};
 
 use image_compress_tauri::{
     __cmd__close_splashscreen, __cmd__get_drag_files, __cmd__start_compress,
@@ -18,7 +18,11 @@ use image_compress_tauri::{
 use tracing::warn;
 
 fn main() -> Result<(), Box<dyn Error>> {
+    let num = num_cpus::get();
+    println!("num: {}", num);
+
     let rt = tokio::runtime::Builder::new_multi_thread()
+        .thread_name("image-compress-tauri-async")
         // 开启所有特性
         .enable_all()
         // 监听线程停止
