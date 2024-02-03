@@ -1,9 +1,5 @@
 use serde::{Deserialize, Serialize};
-use std::{
-    fs,
-    path::{Path, PathBuf},
-    sync::Arc,
-};
+use std::{path::PathBuf, sync::Arc};
 use tokio::sync::{oneshot, RwLock};
 
 use crate::{
@@ -22,24 +18,12 @@ pub fn get_drag_files(files: Vec<String>, quality: i32) -> Result<Vec<ImageCompr
     let f = files
         .iter()
         .map(|file| {
-            let metadata = fs::metadata(file).unwrap();
-
-            if metadata.is_file() {
-                let extension = Path::new(file).extension().and_then(|ext| ext.to_str()).unwrap();
-
-                match extension {
-                    "webp" | "png" | "gif" | "jpg" | "jpeg" => Some(vec![ImageCompression::new(file.to_string(), quality).unwrap_or_default()]),
-                    _ => None,
-                }
-                .unwrap()
-            } else {
-                let path = PathBuf::from(file);
-                let files = glob_dir("*.{png,webp,gif,jpg,jpeg}", path.to_str().unwrap()).unwrap();
-                files
-                    .into_iter()
-                    .map(|file| ImageCompression::new(file, quality).unwrap())
-                    .collect::<Vec<ImageCompression>>()
-            }
+            let path = PathBuf::from(file);
+            let files = glob_dir("*.{png,webp,gif,jpg,jpeg}", path.to_str().unwrap()).unwrap();
+            files
+                .into_iter()
+                .map(|file| ImageCompression::new(file, quality).unwrap())
+                .collect::<Vec<ImageCompression>>()
         })
         .flat_map(|e| e.into_iter())
         .collect::<Vec<ImageCompression>>();
