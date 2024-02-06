@@ -14,7 +14,7 @@ pub struct DragFiles {
 
 // !不知道为什么这么返回错误类型
 #[tauri::command]
-pub fn get_drag_files(files: Vec<String>, quality: i32) -> Result<Vec<ImageCompression>, TauriError> {
+pub fn get_drag_files(files: Vec<String>, quality: i8) -> Result<Vec<ImageCompression>, TauriError> {
     let f = files
         .iter()
         .map(|file| {
