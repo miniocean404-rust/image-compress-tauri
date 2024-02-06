@@ -1955,6 +1955,7 @@ dependencies = [
  "tracing",
  "tracing-appender",
  "tracing-subscriber",
+ "uuid",
  "walkdir",
  "webp",
  "webview2-com 0.28.0",

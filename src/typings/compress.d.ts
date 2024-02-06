@@ -1,5 +1,7 @@
 export interface ImageCompreessInfo {
   name: string
+  id: string
+
   state: CompressState
   origin: number
   compress: number

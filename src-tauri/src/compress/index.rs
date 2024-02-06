@@ -18,6 +18,8 @@ use super::{
 pub struct ImageCompression {
     pub name: String,
 
+    pub id: String,
+
     pub state: CompressState,
 
     #[serde(default)]
@@ -60,12 +62,15 @@ impl ImageCompression {
 
         let before_size = fs::metadata(&path_buf)?.len();
 
+        let id = uuid::Uuid::new_v4().to_string();
+
         Ok(Self {
             name: file_name,
             file_type,
             quality,
             before_size,
             path,
+            id,
             // 没有初始化的字段使用默认值
             ..Default::default()
         })

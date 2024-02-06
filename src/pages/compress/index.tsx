@@ -13,6 +13,7 @@ import { appWindow } from "@tauri-apps/api/window"
 import { ImageCompreessInfo, CompressState } from "@/typings/compress"
 import { formartFileSize } from "@/utils/file"
 import { BaseDirectory, writeBinaryFile } from "@tauri-apps/api/fs"
+import { flushSync } from "react-dom"
 
 // DOM 内容加载完成之后，通过 invoke 调用 在 Rust 中已经注册的命令
 window.addEventListener("DOMContentLoaded", () => {
@@ -45,17 +46,11 @@ export default function Home() {
           case "drop":
             setIsHover(false)
             const infos = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
-            setList([...list, ...infos])
 
-            for (let index = 0; index < infos.length; index++) {
-              const info = infos[index]
+            let final = [...list, ...infos]
+            setList(final)
 
-              invoke<ImageCompreessInfo>("start_compress", { info, is_cover: isCover }).then((done) => {
-                infos[index] = info.path === done.path ? done : info
-                setList([...list, ...infos])
-              })
-            }
-
+            handleStart(final, infos)
             break
         }
       })
@@ -65,6 +60,24 @@ export default function Home() {
       unlistenRef.current && unlistenRef.current()
     }
   }, [isCover, quality, list])
+
+  const handleStart = async (all: ImageCompreessInfo[], compress: ImageCompreessInfo[]) => {
+    for (let index = 0; index < compress.length; index++) {
+      const info = compress.at(index)
+
+      invoke<ImageCompreessInfo>("start_compress", { info, is_cover: isCover }).then((done) => {
+        for (let i = 0; i < all.length; i++) {
+          const element = all[i]
+
+          if (element.id === done.id) {
+            all[i] = done
+
+            setList([...all])
+          }
+        }
+      })
+    }
+  }
 
   const getQuality = (e) => {
     setQuality(Number(e.target.value))
@@ -103,7 +116,7 @@ export default function Home() {
 
           {list.map((info) => {
             return (
-              <div className={styles.image_info} key={info.path}>
+              <div className={styles.image_info} key={info.id}>
                 <span>{info.name || "--"}</span>
                 <span>{CompressStateChinese[info.state] || "--"}</span>
                 <span>{formartFileSize(info.origin) || "--"}</span>
