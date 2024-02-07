@@ -7,13 +7,12 @@ import "simplebar-react/dist/simplebar.min.css"
 import "./scrollbar.scss"
 
 import { invoke } from "@tauri-apps/api/tauri"
-import { UnlistenFn } from "@tauri-apps/api/event"
-import { appWindow } from "@tauri-apps/api/window"
+import { EventCallback, UnlistenFn } from "@tauri-apps/api/event"
+import { FileDropEvent, appWindow } from "@tauri-apps/api/window"
 
 import { ImageCompreessInfo, CompressState } from "@/typings/compress"
 import { formartFileSize } from "@/utils/file"
 import { BaseDirectory, writeBinaryFile } from "@tauri-apps/api/fs"
-import { flushSync } from "react-dom"
 
 // DOM 内容加载完成之后，通过 invoke 调用 在 Rust 中已经注册的命令
 window.addEventListener("DOMContentLoaded", () => {
@@ -26,56 +25,47 @@ const CompressStateChinese = {
 }
 
 export default function Home() {
-  let unlistenRef = useRef<UnlistenFn | null>()
+  let unlistenRef = useRef<Promise<UnlistenFn> | null>()
   const [isHover, setIsHover] = useState<boolean>(false)
   const [list, setList] = useState<ImageCompreessInfo[]>([])
   const [quality, setQuality] = useState<number>(80)
   const [isCover, setIsCover] = useState<boolean>(false)
 
   useEffect(() => {
-    ;(async function () {
-      // 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
-      unlistenRef.current = await appWindow.onFileDropEvent(async (event) => {
-        switch (event.payload.type) {
-          case "hover":
-            setIsHover(true)
-            break
-          case "cancel":
-            setIsHover(false)
-            break
-          case "drop":
-            setIsHover(false)
-            const infos = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
-
-            let final = [...list, ...infos]
-            setList(final)
-
-            handleStart(final, infos)
-            break
-        }
-      })
-    })()
+    // 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
+    unlistenRef.current = appWindow.onFileDropEvent(onFileDrop)
 
     return () => {
-      unlistenRef.current && unlistenRef.current()
+      unlistenRef.current && unlistenRef.current.then((un) => un())
     }
   }, [isCover, quality, list])
 
-  const handleStart = async (all: ImageCompreessInfo[], compress: ImageCompreessInfo[]) => {
-    for (let index = 0; index < compress.length; index++) {
-      const info = compress.at(index)
+  const onFileDrop: EventCallback<FileDropEvent> = async (event) => {
+    switch (event.payload.type) {
+      case "hover":
+        setIsHover(true)
+        break
+      case "cancel":
+        setIsHover(false)
+        break
+      case "drop":
+        setIsHover(false)
+        const infos = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
 
-      invoke<ImageCompreessInfo>("start_compress", { info, is_cover: isCover }).then((done) => {
-        for (let i = 0; i < all.length; i++) {
-          const element = all[i]
+        let total = [...list, ...infos]
+        setList(total)
 
-          if (element.id === done.id) {
-            all[i] = done
+        infos.forEach((info) => {
+          invoke<ImageCompreessInfo>("start_compress", { info, is_cover: isCover }).then((done) => {
+            const index = total.findIndex((find) => find.id === done.id)
+            if (index) {
+              total.splice(index, 1, done)
+              setList([...total])
+            }
+          })
+        })
 
-            setList([...all])
-          }
-        }
-      })
+        break
     }
   }
 
