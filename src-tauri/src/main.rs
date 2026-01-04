@@ -3,7 +3,7 @@
 
 use std::error::Error;
 
-use image_compress_tauri::window::{
+use image_compress_tauri_lib::window::{
     manage::AsyncProcInputTx,
     setup::get_setup,
 };
@@ -48,10 +48,10 @@ async fn async_main() -> Result<(), Box<dyn Error>> {
         })
         // 注册命令、方法
         .invoke_handler(tauri::generate_handler![
-            image_compress_tauri::window::command::splash::close_splashscreen,
-            image_compress_tauri::window::command::drag::get_drag_files,
-            image_compress_tauri::window::command::drag::start_compress,
-            image_compress_tauri::window::command::js2rs::js2rs
+            image_compress_tauri_lib::window::command::splash::close_splashscreen,
+            image_compress_tauri_lib::window::command::drag::get_drag_files,
+            image_compress_tauri_lib::window::command::drag::start_compress,
+            image_compress_tauri_lib::window::command::js2rs::js2rs
         ])
         .run(tauri::generate_context!())
         .expect("运行 tauri 应用程序时出错");
