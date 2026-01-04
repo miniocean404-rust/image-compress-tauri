@@ -3,7 +3,7 @@
   "productName": "image-compress",
   "version": "0.0.2",
   "identifier": "com.miniocean.compress.image",
-  "mainBinaryName": "image-compress",
+  "mainBinaryName": "image-compress-tauri",
   "build": {
     "beforeDevCommand": "pnpm vite:dev",
     "beforeBuildCommand": "pnpm vite:build",
