@@ -1,7 +1,7 @@
-import { window } from "@tauri-apps/api";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 // 窗口置顶
 function handleWindowTop() {
-  let curWin = window.getCurrent();
+  let curWin = getCurrentWindow();
   curWin.setAlwaysOnTop(true);
 }

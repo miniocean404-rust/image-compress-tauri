@@ -4,6 +4,8 @@ import { fileURLToPath, URL } from "node:url"
 
 import { CodeInspectorPlugin } from "code-inspector-plugin"
 
+const host = process.env.TAURI_DEV_HOST
+
 // https://vitejs.dev/config/
 export default defineConfig((config) => {
   const isDev = config.mode === "development"
@@ -17,19 +19,27 @@ export default defineConfig((config) => {
   return {
     plugins: [react(), CodeInspectorPlugin({ bundler: "vite" })],
 
-    // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
+    // 专为Tauri开发量身定制的Vite选项，仅适用于“Tauri开发”或“Tauri构建”。
     //
-    // 1. prevent vite from obscuring rust errors
+    // 1. 阻止 vite 掩盖 rust 编译错误
     clearScreen: false,
-    // 2. tauri expects a fixed port, fail if that port is not available
+    // 2. tauri 期望一个固定的端口，如果端口不可用则失败
     server: {
       port: 1420,
       strictPort: true,
-      cors: true, // 配置 CORS 跨域
+      host: host || false,
+      hmr: host
+        ? {
+            protocol: "ws",
+            host,
+            port: 1421,
+          }
+        : undefined,
       watch: {
-        // 3. tell vite to ignore watching `src-tauri`
+        // 3. 告诉 vite 忽略监听 `src-tauri`
         ignored: ["**/src-tauri/**"],
       },
+      cors: true, // 配置 CORS 跨域
     },
 
     resolve: {

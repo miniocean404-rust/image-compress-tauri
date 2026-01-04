@@ -1,9 +1,10 @@
 import styles from "./index.module.scss";
 
 import { emit, listen } from "@tauri-apps/api/event";
-import { readText } from "@tauri-apps/api/clipboard";
-import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/api/notification";
-import { WebviewWindow, appWindow } from "@tauri-apps/api/window";
+import { readText } from "@tauri-apps/plugin-clipboard-manager";
+import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/plugin-notification";
+import { WebviewWindow } from "@tauri-apps/api/webviewWindow";
+import { getCurrentWindow } from "@tauri-apps/api/window";
 
 function Home() {
   const handleGlobalEvent = async () => {
@@ -17,6 +18,7 @@ function Home() {
   };
 
   const handleWindowEvent = () => {
+    const appWindow = getCurrentWindow();
     appWindow.emit("event", { message: "Tauri is awesome!" });
 
     const webview = new WebviewWindow("window");

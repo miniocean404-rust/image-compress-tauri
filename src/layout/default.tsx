@@ -1,6 +1,6 @@
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react"
 import { Outlet, ScrollRestoration } from "react-router-dom"
-import { type } from "@tauri-apps/api/os"
+import { type as osType } from "@tauri-apps/plugin-os"
 
 import styles from "./defaylt.module.scss"
 
@@ -11,7 +11,7 @@ function DefaultLayout({ children }: PropsWithChildren<any>): ReactNode {
   }, [])
 
   const init = async () => {
-    const isMac = (await type()) === "Darwin"
+    const isMac = osType() === "macos"
     setIsMac(isMac)
   }
 

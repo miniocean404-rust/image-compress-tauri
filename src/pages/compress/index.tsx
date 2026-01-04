@@ -6,13 +6,13 @@ import SimpleBar from "simplebar-react"
 import "simplebar-react/dist/simplebar.min.css"
 import "./scrollbar.scss"
 
-import { invoke } from "@tauri-apps/api/tauri"
-import { EventCallback, UnlistenFn } from "@tauri-apps/api/event"
-import { FileDropEvent, appWindow } from "@tauri-apps/api/window"
+import { invoke } from "@tauri-apps/api/core"
+import { UnlistenFn, Event } from "@tauri-apps/api/event"
+import { getCurrentWindow, DragDropEvent } from "@tauri-apps/api/window"
 
 import { ImageCompreessInfo, CompressState } from "@/typings/compress"
 import { formartFileSize } from "@/utils/file"
-import { BaseDirectory, writeBinaryFile } from "@tauri-apps/api/fs"
+import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs"
 
 // DOM 内容加载完成之后，通过 invoke 调用 在 Rust 中已经注册的命令
 window.addEventListener("DOMContentLoaded", () => {
@@ -25,32 +25,35 @@ const CompressStateChinese = {
 }
 
 export default function Home() {
-  let unlistenRef = useRef<Promise<UnlistenFn> | null>()
+  let unlistenRef = useRef<Promise<UnlistenFn>>(null)
   const [isHover, setIsHover] = useState<boolean>(false)
   const [list, setList] = useState<ImageCompreessInfo[]>([])
   const [quality, setQuality] = useState<number>(80)
   const [isCover, setIsCover] = useState<boolean>(false)
 
   useEffect(() => {
-    // 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
-    unlistenRef.current = appWindow.onFileDropEvent(onFileDrop)
+    // 监听拖拽事件
+    // 旧: 或者监听拖拽结束事件  listen("tauri://file-drop", () => {});
+    const appWindow = getCurrentWindow()
+    unlistenRef.current = appWindow.onDragDropEvent(onFileDrop)
 
     return () => {
       unlistenRef.current && unlistenRef.current.then((un) => un())
     }
   }, [isCover, quality, list])
 
-  const onFileDrop: EventCallback<FileDropEvent> = async (event) => {
-    switch (event.payload.type) {
-      case "hover":
+  const onFileDrop = async (event: Event<DragDropEvent>) => {
+    const payload = event.payload
+    switch (payload.type) {
+      case "enter":
         setIsHover(true)
         break
-      case "cancel":
+      case "leave":
         setIsHover(false)
         break
       case "drop":
         setIsHover(false)
-        const infos = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: event.payload.paths, quality })
+        const infos = await invoke<ImageCompreessInfo[]>("get_drag_files", { files: payload.paths, quality })
 
         let total = [...list, ...infos]
         setList(total)
@@ -86,7 +89,7 @@ export default function Home() {
   const downloadImg = async (mem: number[], name: string, type: string) => {
     console.log(BaseDirectory.Desktop)
 
-    await writeBinaryFile(name, new Uint8Array(mem), { dir: BaseDirectory.Desktop })
+    await writeFile(name, new Uint8Array(mem), { baseDir: BaseDirectory.Desktop })
   }
 
   return (
