@@ -1,9 +1,3 @@
-use tauri::Menu;
-
-// use super::{custom::create_custom_menu, native::create_native_menu};
-
-pub fn get_menu() -> Menu {
-    Menu::new()
-    // .add_submenu(create_native_menu())
-    // .add_submenu(create_custom_menu())
-}
+// Tauri v2 中 Menu API 已完全重写
+// 如果需要窗口菜单，请在 setup 中使用新的 Menu API 创建
+// 参考: https://tauri.app/learn/window-menu/

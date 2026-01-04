@@ -1,46 +1,71 @@
 {
-  "$schema": "https://schema.tauri.app/config/1",
-  "package": {
-    "productName": "image-compress",
-    "version": "0.0.2"
-  },
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "image-compress",
+  "version": "0.0.2",
+  "identifier": "com.miniocean.compress.image",
+  "mainBinaryName": "image-compress",
   "build": {
     "beforeDevCommand": "pnpm vite:dev",
     "beforeBuildCommand": "pnpm vite:build",
-    "devPath": "http://localhost:1420",
-    "distDir": "../dist",
-    "withGlobalTauri": true
+    "devUrl": "http://localhost:1420",
+    "frontendDist": "../dist"
   },
-  "tauri": {
-    "allowlist": {
-      "fs": {
-        "scope": [
-          "*",
-          "$DESKTOP/*"
-        ],
-        "all": true
+  "app": {
+    "withGlobalTauri": true,
+    "security": {
+      "csp": null
+    },
+    "windows": [
+      {
+        "title": "图片压缩",
+        "center": true,
+        "fullscreen": false,
+        "dragDropEnabled": true,
+        "resizable": true,
+        "width": 800,
+        "height": 600,
+        "visible": true,
+        "decorations": true,
+        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+      }
+    ],
+    "trayIcon": {
+      "iconPath": "icons/32x32.png",
+      "title": "图片压缩",
+      "iconAsTemplate": true
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/32x32.png",
+      "icons/128x128.png",
+      "icons/128x128@2x.png",
+      "icons/icon.icns",
+      "icons/icon.ico"
+    ],
+    "createUpdaterArtifacts": true,
+    "windows": {
+      "wix": {
+        "language": "zh-CN"
       },
-      "clipboard": {
-        "all": true
-      },
-      "notification": {
-        "all": true
-      },
-      "globalShortcut": {
-        "all": true
-      },
-      "all": false,
-      "shell": {
-        "all": false,
-        "open": true
-      },
-      "window": {
-        "startDragging": true
-      },
-      "os": {
-        "all": true
+      "nsis": {
+        "displayLanguageSelector": true,
+        "languages": [
+          "SimpChinese"
+        ]
       }
     },
+    "macOS": {
+      "dmg": {}
+    },
+    "linux": {
+      "deb": {},
+      "appimage": {}
+    }
+  },
+  "plugins": {
     "updater": {
       "active": true,
       "dialog": true,
@@ -52,51 +77,6 @@
         "installMode": "basicUi",
         "installerArgs": []
       }
-    },
-    "bundle": {
-      "identifier": "com.miniocean.compress.image",
-      "windows": {
-        "wix": {
-          "language": "zh-CN"
-        },
-        "nsis": {
-          "displayLanguageSelector": true,
-          "languages": [
-            "SimpChinese"
-          ]
-        }
-      },
-      "active": true,
-      "targets": "all",
-      "icon": [
-        "icons/32x32.png",
-        "icons/128x128.png",
-        "icons/128x128@2x.png",
-        "icons/icon.icns",
-        "icons/icon.ico"
-      ]
-    },
-    "security": {
-      "csp": null
-    },
-    "windows": [
-      {
-        "title": "图片压缩",
-        "center": true,
-        "fullscreen": false,
-        "fileDropEnabled": true,
-        "resizable": true,
-        "width": 800,
-        "height": 600,
-        "visible": true,
-        "decorations": true,
-        "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
-      }
-    ],
-    "systemTray": {
-      "iconPath": "icons/32x32.png",
-      "title": "图片压缩",
-      "iconAsTemplate": true
     }
   }
 }

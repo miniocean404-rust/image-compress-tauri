@@ -1,13 +1,3 @@
-use tauri::WindowMenuEvent;
-
-pub fn menu_event() -> impl Fn(WindowMenuEvent) + Send + Sync + 'static {
-    |event: WindowMenuEvent| match event.menu_item_id() {
-        "quit" => {
-            std::process::exit(0);
-        }
-        "close" => {
-            event.window().close().unwrap();
-        }
-        _ => {}
-    }
-}
+// Tauri v2 中 Menu 事件处理方式已改变
+// 菜单事件现在通过 Menu::with_items 或 MenuBuilder 的 on_menu_event 回调处理
+// 参考: https://tauri.app/learn/window-menu/

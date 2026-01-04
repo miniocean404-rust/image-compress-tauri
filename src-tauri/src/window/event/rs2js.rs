@@ -1,4 +1,4 @@
-use tauri::Manager;
+use tauri::{Emitter, Manager};
 
 // https://juejin.cn/post/7223325932357894199
 // rust 发送事件给 js
@@ -6,5 +6,6 @@ use tauri::Manager;
 pub fn rs2js<R: tauri::Runtime>(message: String, manager: &impl Manager<R>) {
     // tauri 包装 tokio 异步运行时：https://juejin.cn/post/7223325932357894199
     // tauri::async_runtime::set(tokio::runtime::Handle::current());
-    manager.emit_all("event-name", message).unwrap();
+    // Tauri v2: emit_all 改为 emit
+    manager.emit("event-name", message).unwrap();
 }

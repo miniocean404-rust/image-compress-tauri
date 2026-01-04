@@ -1,55 +1,37 @@
 use std::error::Error;
 
-use tauri::{AppHandle, CustomMenuItem, Manager, SystemTray, SystemTrayEvent, SystemTrayMenu, SystemTrayMenuItem};
+use tauri::{
+    menu::{Menu, MenuItem, PredefinedMenuItem},
+    tray::{MouseButton, MouseButtonState, TrayIconBuilder, TrayIconEvent},
+    App, Manager,
+};
 
 use crate::shared::error::TauriError;
 
-pub fn create_sys_tray() -> SystemTray {
-    let show = CustomMenuItem::new("show".to_string(), "显示");
-    let quit = CustomMenuItem::new("quit".to_string(), "退出");
-    let hide = CustomMenuItem::new("hide".to_string(), "隐藏");
+pub fn setup_tray(app: &mut App) -> Result<(), Box<dyn Error>> {
+    let show = MenuItem::with_id(app, "show", "显示", true, None::<&str>)?;
+    let hide = MenuItem::with_id(app, "hide", "隐藏", true, None::<&str>)?;
+    let close = MenuItem::with_id(app, "close", "关闭", true, None::<&str>)?;
+    let quit = MenuItem::with_id(app, "quit", "退出", true, None::<&str>)?;
+    let separator = PredefinedMenuItem::separator(app)?;
 
-    let mut tray_menu = SystemTrayMenu::new();
+    let menu = if cfg!(target_os = "macos") {
+        let separator2 = PredefinedMenuItem::separator(app)?;
+        Menu::with_items(app, &[&show, &separator, &hide, &close, &separator2, &quit])?
+    } else {
+        let separator2 = PredefinedMenuItem::separator(app)?;
+        Menu::with_items(app, &[&hide, &close, &separator, &quit])?
+    };
 
-    if cfg!(target_os = "macos") {
-        tray_menu = tray_menu.add_item(show).add_native_item(SystemTrayMenuItem::Separator);
-    }
+    let _tray = TrayIconBuilder::new()
+        .icon(app.default_window_icon().unwrap().clone())
+        .menu(&menu)
+        .menu_on_left_click(false)
+        .on_menu_event(move |app, event| {
+            let exec = || -> Result<(), Box<dyn Error + Send + Sync>> {
+                let window = app.get_webview_window("main").ok_or(TauriError::NoWindow)?;
 
-    tray_menu = tray_menu.add_item(hide).add_native_item(SystemTrayMenuItem::Separator).add_item(quit);
-
-    SystemTray::new().with_menu(tray_menu)
-}
-
-pub fn system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
-    let exec = || -> Result<(), Box<dyn Error>> {
-        let window = app.get_window("main").ok_or(TauriError::NoWindow)?;
-
-        match event {
-            SystemTrayEvent::LeftClick { position: _, size: _, .. } => {
-                if cfg!(target_os = "windows") {
-                    if window.is_visible()? {
-                        window.hide()?;
-                    }
-
-                    if !window.is_visible()? || !window.is_focused()? {
-                        window.show()?;
-                        window.set_focus()?;
-                    }
-                }
-
-                println!("左键点击了系统托盘");
-            }
-            SystemTrayEvent::RightClick { position: _, size: _, .. } => {
-                println!("右键点击了系统托盘");
-            }
-            SystemTrayEvent::DoubleClick { position: _, size: _, .. } => {
-                println!("双击了系统托盘");
-            }
-            SystemTrayEvent::MenuItemClick { id, .. } => {
-                // app.tray_handle() 可以动态设置图片及修改菜单项描述字
-                let menu_item_handle = app.tray_handle().get_item(&id);
-
-                match id.as_str() {
+                match event.id.as_ref() {
                     "quit" => {
                         std::process::exit(0);
                     }
@@ -59,15 +41,58 @@ pub fn system_tray_event(app: &AppHandle, event: SystemTrayEvent) {
                     }
                     "hide" => {
                         window.hide()?;
-                        menu_item_handle.set_title("Hide")?
+                        // Tauri v2 中动态修改菜单项需要通过 app.menu() 或保存菜单项引用
+                        // 这里简化处理，如需动态修改标题可以使用 MenuItemExt trait
+                    }
+                    "close" => {
+                        window.close()?;
                     }
                     _ => {}
                 }
-            }
-            _ => {}
-        }
-        Ok(())
-    };
+                Ok(())
+            };
 
-    exec().expect("执行系统托盘事件时出错");
+            exec().expect("执行托盘菜单事件时出错");
+        })
+        .on_tray_icon_event(|tray, event| {
+            let exec = || -> Result<(), Box<dyn Error + Send + Sync>> {
+                let app = tray.app_handle();
+                let window = app.get_webview_window("main").ok_or(TauriError::NoWindow)?;
+
+                match event {
+                    TrayIconEvent::Click {
+                        button: MouseButton::Left,
+                        button_state: MouseButtonState::Up,
+                        ..
+                    } => {
+                        if cfg!(target_os = "windows") {
+                            if window.is_visible()? && window.is_focused()? {
+                                window.hide()?;
+                            } else {
+                                window.show()?;
+                                window.set_focus()?;
+                            }
+                        }
+                        println!("左键点击了系统托盘");
+                    }
+                    TrayIconEvent::Click {
+                        button: MouseButton::Right,
+                        button_state: MouseButtonState::Up,
+                        ..
+                    } => {
+                        println!("右键点击了系统托盘");
+                    }
+                    TrayIconEvent::DoubleClick { .. } => {
+                        println!("双击了系统托盘");
+                    }
+                    _ => {}
+                }
+                Ok(())
+            };
+
+            exec().expect("执行系统托盘事件时出错");
+        })
+        .build(app)?;
+
+    Ok(())
 }

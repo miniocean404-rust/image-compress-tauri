@@ -1,6 +1,6 @@
 use std::error::Error;
 
-use tauri::App;
+use tauri::{App, Manager};
 use tokio::sync::mpsc;
 use tracing::info;
 
@@ -8,9 +8,10 @@ use crate::{
     shared::error::TauriError,
     utils::{debug::is_debug, log::tracing::init_tracing},
     window::event::index::receive_rs2js_send_js2rs,
+    window::tray::index::setup_tray,
 };
 
-pub fn get_sutup(
+pub fn get_setup(
     js2rs_rx: mpsc::Receiver<String>,
     rs2js_tx: mpsc::Sender<String>,
     rs2js_rx: mpsc::Receiver<String>,
@@ -19,7 +20,8 @@ pub fn get_sutup(
         // let _docs_window = tauri::WindowBuilder::new(app, "external", tauri::WindowUrl::External("https://tauri.app/".parse()?)).build()?;
         // let _local_window = tauri::WindowBuilder::new(app, "local", tauri::WindowUrl::App("splash.html".into())).build()?;
 
-        let log_path_buf = app.path_resolver().app_log_dir().ok_or(TauriError::NoPath)?;
+        // Tauri v2: path_resolver() 改为 path()
+        let log_path_buf = app.path().app_log_dir().map_err(|_| TauriError::NoPath)?;
         let mut log_path = log_path_buf.to_str().ok_or(TauriError::NoPath)?;
 
         if is_debug() {
@@ -33,7 +35,10 @@ pub fn get_sutup(
         let cwd = std::env::current_dir()?;
         info!("process.cwd(): ------------ {:?}", cwd);
 
-        let app_handle = app.handle();
+        // 设置系统托盘
+        setup_tray(app)?;
+
+        let app_handle = app.handle().clone();
 
         tauri::async_runtime::spawn(async move { receive_js2rs_send_rs2js(js2rs_rx, rs2js_tx).await });
         tauri::async_runtime::spawn(async move { receive_rs2js_send_js2rs(rs2js_rx, &app_handle).await });
