@@ -19,14 +19,13 @@ pub fn setup_tray(app: &mut App) -> Result<(), Box<dyn Error>> {
         let separator2 = PredefinedMenuItem::separator(app)?;
         Menu::with_items(app, &[&show, &separator, &hide, &close, &separator2, &quit])?
     } else {
-        let separator2 = PredefinedMenuItem::separator(app)?;
         Menu::with_items(app, &[&hide, &close, &separator, &quit])?
     };
 
     let _tray = TrayIconBuilder::new()
         .icon(app.default_window_icon().unwrap().clone())
         .menu(&menu)
-        .menu_on_left_click(false)
+        .show_menu_on_left_click(false)
         .on_menu_event(move |app, event| {
             let exec = || -> Result<(), Box<dyn Error + Send + Sync>> {
                 let window = app.get_webview_window("main").ok_or(TauriError::NoWindow)?;
