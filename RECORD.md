@@ -1,3 +1,22 @@
+# 未完成 TODO
+
+1. .github workerflow 可能有问题，项目升级了最新版本了, 还没测试以及修改
+
+# 问题、踩坑
+
+1. tauri.conf.json 设置如下内容会与 src-tauri 中手动设置的托盘重复, 会展示两个图标
+   ```json
+   {
+     "app": {
+       "trayIcon": {
+         "iconPath": "icons/32x32.png",
+         "title": "图片压缩",
+         "iconAsTemplate": true
+       }
+     }
+   }
+   ```
+
 ## Core 文章
 
 // 编解码参考：https://github.com/imazen/imageflow/blob/9ca1dbd50c7390d5953d711bf78b49ea5217aa60/imageflow_core/src/codecs/mozjpeg_decoder.rs#L17
