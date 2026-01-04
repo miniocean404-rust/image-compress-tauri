@@ -61,8 +61,7 @@ export default defineConfig((config) => {
       // write: true, // 启用将构建后的文件写入磁盘
       // brotliSize: true, // 启用 brotli 压缩大小报告
       // watch: null, // 设置为 {} 则会启用 rollup 的监听器
-      // 可配置 terser 或 esbuild
-      minify: "terser",
+      minify: "esbuild",
       // 代码压缩配置
       terserOptions: {
         // 生产环境移除 console
