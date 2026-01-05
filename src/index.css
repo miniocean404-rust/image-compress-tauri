@@ -31,6 +31,10 @@
   --font-family-base: "Ping fang SC Medium", system-ui, -apple-system, "Segoe UI", Roboto, "Emoji", Helvetica, Arial, sans-serif, "MiSans VF";
   --font-family-serif: Georgia, Cambria, "Times New Roman", Times, serif;
   --font-family-mono: Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* 动画 - TailwindCSS 4 会自动生成 animate-* 类 */
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-fade-in-up: fade-in-up 0.3s ease-out;
 }
 
 /* ========================================
