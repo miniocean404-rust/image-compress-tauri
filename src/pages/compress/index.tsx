@@ -91,7 +91,7 @@ export default function Home() {
   }
 
   return (
-    <div className="w-full h-full bg-theme-gradient text-white flex flex-col">
+    <div className="w-full h-full bg-[image:var(--color-bg-gradient)] text-white flex flex-col">
       {/* 头部统计区域 */}
       <header className="px-5 py-4 flex items-center justify-between">
         <div className="flex items-center gap-6">

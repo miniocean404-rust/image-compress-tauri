@@ -14,7 +14,7 @@ function DefaultLayout({ children }: PropsWithChildren<any>): ReactNode {
   }
 
   return (
-    <div className="h-inherit">
+    <div className="h-[inherit]">
       {/* 需要开启 allowlist.windows.startDragging = true */}
       {/* {isMac && (
         <div className='clearfix'>
@@ -22,7 +22,7 @@ function DefaultLayout({ children }: PropsWithChildren<any>): ReactNode {
         </div>
       )} */}
 
-      <div className="h-full overflow-y-scroll scrollbar-hide">
+      <div className="h-full overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:w-0">
         <ScrollRestoration getKey={(location, matches) => location.pathname} />
         <Outlet />
       </div>

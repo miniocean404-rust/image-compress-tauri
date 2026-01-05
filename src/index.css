@@ -84,38 +84,7 @@
   }
 }
 
-/* ========================================
-   工具类
-   ======================================== */
 @layer utilities {
-  /* 继承高度 */
-  .h-inherit {
-    height: inherit;
-  }
-
-  /* 字体类 */
-  .font-serif {
-    font-family: var(--font-family-serif);
-  }
-
-  .font-mono {
-    font-family: var(--font-family-mono);
-  }
-
-  /* 主题渐变背景 */
-  .bg-theme-gradient {
-    background-image: var(--color-bg-gradient);
-  }
-
-  /* 隐藏滚动条 */
-  .scrollbar-hide {
-    scrollbar-width: none;
-  }
-
-  .scrollbar-hide::-webkit-scrollbar {
-    width: 0;
-  }
-
   /* 可拖拽区域 */
   .drag-region {
     -webkit-app-region: drag;
