@@ -11,8 +11,20 @@ import { ImageCompreessInfo, CompressState } from "@/typings/compress"
 import { formartFileSize } from "@/utils/file"
 import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs"
 
-import { Button, Badge, Card, Dropzone, DropzoneIcon, Glass, Input } from "@/components/ui"
-import { ImageIcon, CheckIcon, LoadingIcon, DownloadIcon, TrashIcon, PackageIcon, InfoIcon, CloseIcon } from "@/components/icons"
+import { Button, Badge, Card, Dropzone, DropzoneIcon, Glass, Slider, CircleProgress, Tooltip } from "@/components/ui"
+import {
+  ImageIcon,
+  CheckIcon,
+  LoadingIcon,
+  DownloadIcon,
+  TrashIcon,
+  PackageIcon,
+  CloseIcon,
+  SparklesIcon,
+  ArrowDownIcon,
+  FileImageIcon,
+  InfoIcon,
+} from "@/components/icons"
 
 // DOM 内容加载完成之后，通过 invoke 调用 在 Rust 中已经注册的命令
 window.addEventListener("DOMContentLoaded", () => {
@@ -92,24 +104,44 @@ export default function Home() {
 
   return (
     <div className="w-full h-full bg-[image:var(--color-bg-gradient)] text-white flex flex-col">
-      {/* 头部统计区域 */}
+      {/* 头部区域 */}
       <header className="px-5 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-6">
-          <h1 className="text-xl font-semibold tracking-wide">图片压缩</h1>
-          {list.length > 0 && (
-            <div className="flex items-center gap-4 text-sm text-white/70">
-              <span>共 {stats.total} 个文件</span>
-              <span className="w-px h-4 bg-white/20" />
-              <span>已完成 {stats.done} 个</span>
-              {stats.totalSaved > 0 && (
-                <>
-                  <span className="w-px h-4 bg-white/20" />
-                  <span className="text-green-300">节省 {formartFileSize(stats.totalSaved)}</span>
-                </>
-              )}
+        <div className="flex items-center gap-4">
+          {/* Logo 和标题 */}
+          <div className="flex items-center gap-3">
+            <div className="w-10 h-10 rounded-xl bg-white/20 backdrop-blur-sm flex items-center justify-center">
+              <SparklesIcon className="w-5 h-5 text-white" />
             </div>
-          )}
+            <div>
+              <h1 className="text-lg font-semibold tracking-wide">图片压缩</h1>
+              <p className="text-xs text-white/50">轻松压缩，保持质量</p>
+            </div>
+          </div>
         </div>
+
+        {/* 统计信息 */}
+        {list.length > 0 && (
+          <div className="flex items-center gap-6">
+            {/* 进度环 */}
+            <div className="flex items-center gap-3">
+              <CircleProgress value={stats.done} max={stats.total} size="sm" />
+              <div className="text-sm">
+                <div className="text-white/70">已完成</div>
+                <div className="font-semibold">
+                  {stats.done}/{stats.total}
+                </div>
+              </div>
+            </div>
+
+            {/* 节省空间 */}
+            {stats.totalSaved > 0 && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-green-500/20">
+                <ArrowDownIcon className="w-4 h-4 text-green-300" />
+                <span className="text-sm font-medium text-green-300">节省 {formartFileSize(stats.totalSaved)}</span>
+              </div>
+            )}
+          </div>
+        )}
       </header>
 
       {/* 主内容区域 */}
@@ -117,85 +149,109 @@ export default function Home() {
         {list.length === 0 ? (
           /* 空状态 - 拖放区域 */
           <Dropzone active={isHover} className="h-full">
+            {/* 装饰背景 */}
+            <div className="absolute inset-0 overflow-hidden pointer-events-none">
+              <div className="absolute -top-20 -right-20 w-40 h-40 bg-white/5 rounded-full blur-3xl" />
+              <div className="absolute -bottom-20 -left-20 w-60 h-60 bg-white/5 rounded-full blur-3xl" />
+            </div>
+
             <DropzoneIcon>
               <ImageIcon />
             </DropzoneIcon>
+
             <h2 className="text-2xl font-medium mb-2 mt-6 text-white/90">拖放图片到这里</h2>
-            <p className="text-white/50 text-sm">支持 PNG、JPEG、GIF、WebP 格式</p>
-            <div className="mt-8 flex items-center gap-2 text-white/40 text-xs">
-              <span className="w-8 h-px bg-white/20" />
+            <p className="text-white/50 text-sm mb-6">支持 PNG、JPEG、GIF、WebP 格式</p>
+
+            {/* 格式标签 */}
+            <div className="flex items-center gap-2">
+              {["PNG", "JPEG", "GIF", "WebP"].map((format) => (
+                <span key={format} className="px-2.5 py-1 text-xs font-medium bg-white/10 rounded-full text-white/60">
+                  {format}
+                </span>
+              ))}
+            </div>
+
+            <div className="mt-8 flex items-center gap-3 text-white/40 text-xs">
+              <span className="w-12 h-px bg-gradient-to-r from-transparent to-white/20" />
               <span>或点击选择文件</span>
-              <span className="w-8 h-px bg-white/20" />
+              <span className="w-12 h-px bg-gradient-to-l from-transparent to-white/20" />
             </div>
           </Dropzone>
         ) : (
           /* 文件列表 */
           <Glass className="h-full flex flex-col overflow-hidden">
             {/* 表头 */}
-            <div className="flex items-center px-4 py-3 text-sm font-medium text-white/70 border-b border-white/10">
-              <span className="flex-[2]">文件名</span>
+            <div className="flex items-center px-4 py-3 text-xs font-medium text-white/50 uppercase tracking-wider border-b border-white/10">
+              <span className="flex-[2]">文件</span>
               <span className="flex-1 text-center">状态</span>
-              <span className="flex-1 text-right">原始大小</span>
+              <span className="flex-1 text-right">原始</span>
               <span className="flex-1 text-right">压缩后</span>
-              <span className="flex-1 text-right">压缩率</span>
-              <span className="w-20 text-center">操作</span>
+              <span className="flex-1 text-right">节省</span>
+              <span className="w-24 text-center">操作</span>
             </div>
 
             {/* 列表内容 */}
             <SimpleBar className="flex-1">
               <div className="p-2 space-y-2">
-                {list.map((info) => (
-                  <Card key={info.id}>
-                    {/* 文件名 */}
-                    <span className="flex-[2] font-medium text-neutral-800 truncate pr-4" title={info.name}>
-                      {info.name || "--"}
-                    </span>
+                {list.map((info, index) => (
+                  <Card key={info.id} className="animate-fade-in-up" style={{ animationDelay: `${index * 50}ms` }}>
+                    {/* 文件信息 */}
+                    <div className="flex-[2] flex items-center gap-3 pr-4">
+                      <div className="w-9 h-9 rounded-lg bg-gradient-to-br from-amber-100 to-orange-200 flex items-center justify-center flex-shrink-0">
+                        <FileImageIcon className="w-4 h-4 text-orange-600" />
+                      </div>
+                      <div className="min-w-0">
+                        <div className="font-medium text-neutral-800 truncate text-sm" title={info.name}>
+                          {info.name || "--"}
+                        </div>
+                        <div className="text-xs text-neutral-400">{info.type?.toUpperCase() || "IMAGE"}</div>
+                      </div>
+                    </div>
 
                     {/* 状态 */}
                     <span className="flex-1 flex justify-center">
                       {info.state === CompressState.Done ? (
                         <Badge variant="success">
-                          <CheckIcon />
+                          <CheckIcon className="w-3 h-3" />
                           完成
                         </Badge>
                       ) : (
                         <Badge variant="warning">
-                          <LoadingIcon />
+                          <LoadingIcon className="w-3 h-3" />
                           压缩中
                         </Badge>
                       )}
                     </span>
 
                     {/* 原始大小 */}
-                    <span className="flex-1 text-right text-neutral-500 text-sm">
-                      {formartFileSize(info.origin) || "--"}
-                    </span>
+                    <span className="flex-1 text-right text-neutral-400 text-sm">{formartFileSize(info.origin) || "--"}</span>
 
                     {/* 压缩后大小 */}
-                    <span className="flex-1 text-right text-neutral-800 text-sm font-medium">
-                      {formartFileSize(info.compress) || "--"}
-                    </span>
+                    <span className="flex-1 text-right text-neutral-700 text-sm font-medium">{formartFileSize(info.compress) || "--"}</span>
 
                     {/* 压缩率 */}
                     <span className="flex-1 text-right">
-                      {info.rate !== undefined ? (
-                        <span className={`text-sm font-semibold ${info.rate > 0 ? "text-green-600" : "text-neutral-400"}`}>
-                          {info.rate > 0 ? `-${info.rate}%` : `${info.rate}%`}
+                      {info.rate !== undefined && info.rate > 0 ? (
+                        <span className="inline-flex items-center gap-1 text-sm font-semibold text-green-600">
+                          <ArrowDownIcon className="w-3 h-3" />
+                          {info.rate}%
                         </span>
                       ) : (
-                        "--"
+                        <span className="text-neutral-300">--</span>
                       )}
                     </span>
 
                     {/* 操作 */}
-                    <span className="w-20 flex justify-center">
+                    <span className="w-24 flex justify-center">
                       {info.state === CompressState.Done ? (
-                        <Button variant="success" size="sm" onClick={() => downloadImg(info.mem, info.name, info.type)}>
-                          <DownloadIcon />
-                          保存
-                        </Button>
+                        <Tooltip content="保存到桌面" position="left">
+                          <Button variant="success" size="sm" onClick={() => downloadImg(info.mem, info.name, info.type)}>
+                            <DownloadIcon className="w-3.5 h-3.5" />
+                            保存
+                          </Button>
+                        </Tooltip>
                       ) : (
-                        <span className="text-neutral-300">--</span>
+                        <span className="text-neutral-300 text-sm">--</span>
                       )}
                     </span>
                   </Card>
@@ -214,39 +270,35 @@ export default function Home() {
         </div>
 
         <div className="flex items-center gap-3">
-          {/* 质量设置 */}
-          <Glass rounded="btn" className="flex items-center gap-2 px-3 py-1.5">
+          {/* 质量滑块 */}
+          <Glass rounded="btn" className="flex items-center gap-3 px-3 py-1.5">
             <span className="text-sm text-white/70">质量</span>
-            <Input
-              className="w-14 text-center py-1 [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
-              inputSize="sm"
-              type="number"
-              min="1"
-              max="100"
-              required
-              value={quality}
-              onChange={getQuality}
-            />
-            <span className="text-sm text-white/70">%</span>
+            <Slider className="w-24" value={quality} min={1} max={100} onChange={getQuality} />
           </Glass>
 
           {/* 覆盖选项 */}
-          <Button variant={isCover ? "primary" : "ghost"} onClick={handleCover}>
-            {isCover ? <CheckIcon /> : <CloseIcon />}
-            {isCover ? "覆盖原文件" : "不覆盖"}
-          </Button>
+          <Tooltip content={isCover ? "将覆盖原文件" : "保留原文件"} position="top">
+            <Button variant={isCover ? "primary" : "ghost"} onClick={handleCover}>
+              {isCover ? <CheckIcon className="w-4 h-4" /> : <CloseIcon className="w-4 h-4" />}
+              {isCover ? "覆盖原文件" : "不覆盖"}
+            </Button>
+          </Tooltip>
 
           {/* 清理按钮 */}
-          <Button variant="ghost" onClick={handleClear}>
-            <TrashIcon />
-            清理
-          </Button>
+          <Tooltip content="清空列表" position="top">
+            <Button variant="ghost" onClick={handleClear}>
+              <TrashIcon className="w-4 h-4" />
+              清理
+            </Button>
+          </Tooltip>
 
           {/* 一键打包 */}
-          <Button variant="primary" onClick={handleDownload}>
-            <PackageIcon />
-            一键打包
-          </Button>
+          <Tooltip content="打包下载所有文件" position="top">
+            <Button variant="primary" onClick={handleDownload}>
+              <PackageIcon className="w-4 h-4" />
+              一键打包
+            </Button>
+          </Tooltip>
         </div>
       </footer>
     </div>
