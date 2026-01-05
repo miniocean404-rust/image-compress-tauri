@@ -1,4 +1,4 @@
-import { RouteObject, createBrowserRouter } from "react-router-dom"
+import { RouteObject, createBrowserRouter } from "react-router"
 import { lazy } from "react"
 
 import App from "../App"

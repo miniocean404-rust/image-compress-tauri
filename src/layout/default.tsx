@@ -1,5 +1,5 @@
 import { PropsWithChildren, ReactNode, useEffect, useState } from "react"
-import { Outlet, ScrollRestoration } from "react-router-dom"
+import { Outlet, ScrollRestoration } from "react-router"
 import { type as osType } from "@tauri-apps/plugin-os"
 
 function DefaultLayout({ children }: PropsWithChildren<any>): ReactNode {
