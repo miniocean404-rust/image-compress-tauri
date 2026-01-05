@@ -1,10 +1,8 @@
-import styles from "./index.module.scss"
 import { useEffect, useRef, useState } from "react"
 import { useUnmount, useMount } from "ahooks"
 
 import SimpleBar from "simplebar-react"
 import "simplebar-react/dist/simplebar.min.css"
-import "./scrollbar.scss"
 
 import { invoke } from "@tauri-apps/api/core"
 import { UnlistenFn, Event } from "@tauri-apps/api/event"
@@ -93,30 +91,40 @@ export default function Home() {
   }
 
   return (
-    <div className={styles.box} style={{ backgroundColor: isHover ? "red" : "" }}>
-      <header className={styles.header}>
-        <span>名称</span>
-        <span>状态</span>
-        <span>原始大小</span>
-        <span>压缩后大小</span>
-        <span>压缩率</span>
-        <span>操作</span>
+    <div
+      className="w-full h-full bg-theme-gradient text-[var(--color-text-primary)] flex flex-col"
+      style={{ backgroundColor: isHover ? "red" : "" }}
+    >
+      <header className="px-[var(--spacing-page)] py-2.5 text-left flex items-center justify-around">
+        <span className="flex-1">名称</span>
+        <span className="flex-1">状态</span>
+        <span className="flex-1">原始大小</span>
+        <span className="flex-1">压缩后大小</span>
+        <span className="flex-1">压缩率</span>
+        <span className="flex-1">操作</span>
       </header>
 
-      <div className={styles.list}>
-        <SimpleBar className={styles.scrollbar}>
-          {list.length === 0 && <div className={styles.tip}>拖 放 图 片</div>}
+      <div className="overflow-y-scroll h-full">
+        <SimpleBar className="h-inherit">
+          {list.length === 0 && (
+            <div className="h-inherit w-max text-6xl mx-auto blur-[2px]">
+              拖 放 图 片
+            </div>
+          )}
 
           {list.map((info) => {
             return (
-              <div className={styles.image_info} key={info.id}>
-                <span>{info.name || "--"}</span>
-                <span>{CompressStateChinese[info.state] || "--"}</span>
-                <span>{formartFileSize(info.origin) || "--"}</span>
-                <span>{formartFileSize(info.compress) || "--"}</span>
-                <span>{info.rate + "%" || "--"}</span>
+              <div
+                className="flex items-center justify-around h-[50px] bg-[var(--color-bg-card)] text-[var(--color-text-dark)] mb-0.5 p-[var(--spacing-box)] last:mb-0 hover:bg-[var(--color-bg-card-hover)]"
+                key={info.id}
+              >
+                <span className="flex-1">{info.name || "--"}</span>
+                <span className="flex-1">{CompressStateChinese[info.state] || "--"}</span>
+                <span className="flex-1">{formartFileSize(info.origin) || "--"}</span>
+                <span className="flex-1">{formartFileSize(info.compress) || "--"}</span>
+                <span className="flex-1">{info.rate + "%" || "--"}</span>
                 <span
-                  className={`${styles.down_file} ${info.state === CompressState.Done && styles.done}`}
+                  className={`flex-1 text-[var(--color-text-danger)] text-xs ${info.state === CompressState.Done ? "cursor-pointer" : ""}`}
                   onClick={() => downloadImg(info.mem, info.name, info.type)}
                 >
                   {info.state === CompressState.Done ? "保存" : "--"}
@@ -127,24 +135,41 @@ export default function Home() {
         </SimpleBar>
       </div>
 
-      <footer>
-        <div className={styles.action_tip}>🔔 拖放图片文件到上方区域</div>
+      <footer className="w-full flex items-center justify-between px-[var(--spacing-page)] py-2.5">
+        <div>🔔 拖放图片文件到上方区域</div>
 
-        <div className={styles.action}>
-          <div className={styles.quality_box}>
+        <div className="flex items-center">
+          <div className="inline-block mx-1.5">
             <span>质量</span>
-            <input className={styles.silder} type='number' min={"1"} max={"100"} required value={quality} onChange={getQuality} />%
+            <input
+              className="m-1.5 rounded-[var(--radius-input)] px-3 py-1 w-[45px] text-sm leading-5 border border-[var(--color-border-input)] [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none"
+              type='number'
+              min={"1"}
+              max={"100"}
+              required
+              value={quality}
+              onChange={getQuality}
+            />%
           </div>
 
-          <div className={styles.btn} onClick={handleClear}>
+          <div
+            className="inline-block cursor-pointer mx-1.5 rounded-[var(--radius-btn)] border border-white px-1.5 py-0.5"
+            onClick={handleClear}
+          >
             清理
           </div>
 
-          <div className={styles.btn} onClick={handleCover}>
+          <div
+            className="inline-block cursor-pointer mx-1.5 rounded-[var(--radius-btn)] border border-white px-1.5 py-0.5"
+            onClick={handleCover}
+          >
             {isCover ? "覆盖" : "不覆盖"}
           </div>
 
-          <div className={styles.btn} onClick={handleDownload}>
+          <div
+            className="inline-block cursor-pointer mx-1.5 rounded-[var(--radius-btn)] border border-white px-1.5 py-0.5"
+            onClick={handleDownload}
+          >
             一键打包
           </div>
         </div>

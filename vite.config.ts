@@ -1,5 +1,6 @@
 import { defineConfig, loadEnv, normalizePath, searchForWorkspaceRoot } from "vite"
 import react from "@vitejs/plugin-react"
+import tailwindcss from "@tailwindcss/vite"
 import { fileURLToPath, URL } from "node:url"
 
 import { CodeInspectorPlugin } from "code-inspector-plugin"
@@ -17,7 +18,7 @@ export default defineConfig((config) => {
   const env = loadEnv(config.mode, process.cwd())
 
   return {
-    plugins: [react(), CodeInspectorPlugin({ bundler: "vite" })],
+    plugins: [react(), tailwindcss(), CodeInspectorPlugin({ bundler: "vite" })],
 
     // 专为Tauri开发量身定制的Vite选项，仅适用于“Tauri开发”或“Tauri构建”。
     //
@@ -62,7 +63,7 @@ export default defineConfig((config) => {
       emptyOutDir: true, // 构建时清空目录
       chunkSizeWarningLimit: 500,
       assetsInlineLimit: 4096, // 图片转 base64 编码的阈值
-      polyfillModulePreload: true, // 是否自动注入 module preload 的 polyfill
+      modulePreload: { polyfill: true }, // 是否自动注入 module preload 的 polyfill
       reportCompressedSize: false, // 启用/禁用 gzip 压缩大小报告
       sourcemap: isServe, // 构建后是否生成 source map 文件。如果为 true，将会创建一个独立的 source map 文件。
       manifest: false, // 当设置为 true，构建后将会生成 manifest.json 文件
@@ -118,14 +119,6 @@ export default defineConfig((config) => {
     css: {
       modules: {
         scopeBehaviour: "local",
-      },
-      preprocessorOptions: {
-        // 给含有中文的scss文件添加 @charset:UTF-8;
-        charset: false,
-        scss: {
-          /* .scss全局预定义变量，引入多个文件 以;(分号分割)*/
-          additionalData: `@use "@/css/var/index.scss" as *;@use "@/css/device/device.mixin.scss" as *;`,
-        },
       },
       // 可以查看 CSS 的源码
       devSourcemap: true,

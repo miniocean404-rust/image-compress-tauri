@@ -1,5 +1,3 @@
-import styles from "./index.module.scss";
-
 import { emit, listen } from "@tauri-apps/api/event";
 import { readText } from "@tauri-apps/plugin-clipboard-manager";
 import { isPermissionGranted, requestPermission, sendNotification } from "@tauri-apps/plugin-notification";
@@ -43,7 +41,7 @@ function Home() {
   }
 
   return (
-    <div className={styles.box}>
+    <div className="w-full h-full bg-[var(--color-bg-demo)]">
       <button onClick={readClipboard}>读取剪贴板</button>
       <button onClick={handleSendNotification}>发送通知</button>
       <button onClick={handleGlobalEvent}>全局事件</button>
