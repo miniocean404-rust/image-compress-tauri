@@ -28,8 +28,8 @@ export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBar
           title='关闭'
         >
           {isHovered && (
-            <svg className='h-2 w-2 text-[#4d0000]' viewBox='0 0 12 12' fill='none' stroke='currentColor' strokeWidth='2'>
-              <path d='M3 3l6 6M9 3l-6 6' />
+            <svg className='h-1.5 w-1.5' viewBox='0 0 6 6' fill='none' stroke='#4d0000' strokeWidth='1.2' strokeLinecap='round'>
+              <path d='M1 1L5 5M5 1L1 5' />
             </svg>
           )}
         </button>
@@ -41,8 +41,8 @@ export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBar
           title='最小化'
         >
           {isHovered && (
-            <svg className='h-2 w-2 text-[#995700]' viewBox='0 0 12 12' fill='none' stroke='currentColor' strokeWidth='2'>
-              <path d='M2 6h8' />
+            <svg className='h-1.5 w-1.5' viewBox='0 0 6 6' fill='none' stroke='#995700' strokeWidth='1.2' strokeLinecap='round'>
+              <path d='M1 3H5' />
             </svg>
           )}
         </button>
@@ -54,8 +54,8 @@ export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBar
           title='最大化'
         >
           {isHovered && (
-            <svg className='h-2 w-2 text-[#006500]' viewBox='0 0 12 12' fill='none' stroke='currentColor' strokeWidth='1.5'>
-              <path d='M2 4l4-2 4 2M2 8l4 2 4-2M2 4v4M10 4v4' />
+            <svg className='h-1.5 w-1.5' viewBox='0 0 6 6' fill='none' stroke='#006500' strokeWidth='1.2' strokeLinecap='round'>
+              <path d='M1 1.5L3 0.5L5 1.5M1 4.5L3 5.5L5 4.5M1 1.5V4.5M5 1.5V4.5' />
             </svg>
           )}
         </button>
