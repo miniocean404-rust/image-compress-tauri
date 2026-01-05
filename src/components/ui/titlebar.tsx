@@ -100,7 +100,7 @@ function WindowsTitleBar({
 
         {/* 最大化按钮 */}
         <button onClick={onMaximize} className='flex h-full w-11.5 items-center justify-center transition-colors hover:bg-black/10' title='最大化'>
-          <svg width='10' height='10' viewBox='0 0 10 10' fill='none' style={{ shapeRendering: 'geometricPrecision' }}>
+          <svg width='10' height='10' viewBox='0 0 10 10' fill='none' style={{ shapeRendering: "geometricPrecision" }}>
             <path d='M1 1h8v8H1z' stroke='currentColor' strokeWidth='1' fill='none' />
           </svg>
         </button>
