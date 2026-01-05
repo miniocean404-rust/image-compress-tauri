@@ -1,28 +1,15 @@
-import { PropsWithChildren, ReactNode, useEffect, useState } from "react"
+import { PropsWithChildren, ReactNode } from "react"
 import { Outlet, ScrollRestoration } from "react-router"
-import { type as osType } from "@tauri-apps/plugin-os"
+import { TitleBar } from "../components/ui/titlebar"
 
 function DefaultLayout({ children }: PropsWithChildren<any>): ReactNode {
-  const [isMac, setIsMac] = useState(false)
-  useEffect(() => {
-    init()
-  }, [])
-
-  const init = async () => {
-    const isMac = osType() === "macos"
-    setIsMac(isMac)
-  }
-
   return (
-    <div className="h-[inherit]">
-      {/* 需要开启 allowlist.windows.startDragging = true */}
-      {/* {isMac && (
-        <div className='clearfix'>
-          <div data-tauri-drag-region className="float-left select-none h-[var(--height-titlebar)] w-full bg-[var(--color-bg-header)]"></div>
-        </div>
-      )} */}
+    <div className="flex h-[inherit] flex-col overflow-hidden rounded-xl bg-bg-gradient">
+      {/* Mac 风格标题栏 */}
+      <TitleBar />
 
-      <div className="h-full overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:w-0">
+      {/* 主内容区域 */}
+      <div className="flex-1 overflow-y-scroll [scrollbar-width:none] [&::-webkit-scrollbar]:w-0">
         <ScrollRestoration getKey={(location, matches) => location.pathname} />
         <Outlet />
       </div>
