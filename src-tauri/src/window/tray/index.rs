@@ -64,13 +64,15 @@ pub fn setup_tray(app: &mut App) -> Result<(), Box<dyn Error>> {
                         button_state: MouseButtonState::Up,
                         ..
                     } => {
-                        if cfg!(target_os = "windows") {
-                            if window.is_visible()? && window.is_focused()? {
-                                window.hide()?;
-                            } else {
-                                window.show()?;
-                                window.set_focus()?;
+                        let is_minimized = window.is_minimized()?;
+                        if window.is_visible()? && window.is_focused()? && !is_minimized {
+                            window.hide()?;
+                        } else {
+                            if is_minimized {
+                                window.unminimize()?;
                             }
+                            window.show()?;
+                            window.set_focus()?;
                         }
                         println!("左键点击了系统托盘");
                     }
