@@ -11,7 +11,7 @@ import { ImageCompreessInfo, CompressState } from "@/typings/compress"
 import { formartFileSize } from "@/utils/file"
 import { writeFile, BaseDirectory } from "@tauri-apps/plugin-fs"
 
-import { Button, Badge, Card, Dropzone, DropzoneIcon, Glass, Slider, CircleProgress, Tooltip } from "@/components/ui"
+import { Button, Badge, Card, Dropzone, DropzoneIcon, Glass, Slider, Tooltip } from "@/components/ui"
 import {
   ImageIcon,
   CheckIcon,
@@ -121,16 +121,13 @@ export default function Home() {
 
         {/* 统计信息 */}
         {list.length > 0 && (
-          <div className="flex items-center gap-6">
-            {/* 进度环 */}
-            <div className="flex items-center gap-3">
-              <CircleProgress value={stats.done} max={stats.total} size="sm" />
-              <div className="text-sm">
-                <div className="text-white/70">已完成</div>
-                <div className="font-semibold">
-                  {stats.done}/{stats.total}
-                </div>
-              </div>
+          <div className="flex items-center gap-5">
+            {/* 进度指示 */}
+            <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/15 backdrop-blur-sm">
+              <div className="w-2 h-2 rounded-full bg-white/80 animate-pulse" />
+              <span className="text-sm text-white/90">
+                {stats.done}<span className="text-white/50 mx-1">/</span>{stats.total}
+              </span>
             </div>
 
             {/* 节省空间 */}

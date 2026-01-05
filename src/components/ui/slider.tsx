@@ -12,7 +12,6 @@ export const slider = tv({
     fill: [
       "absolute inset-y-0 left-0",
       "bg-white/80 rounded-full",
-      "transition-all duration-150",
     ],
     thumb: [
       "absolute top-1/2 -translate-y-1/2",
@@ -20,7 +19,6 @@ export const slider = tv({
       "bg-white shadow-md",
       "border-2 border-white/50",
       "cursor-grab active:cursor-grabbing",
-      "transition-transform duration-150",
       "hover:scale-110",
     ],
     input: [

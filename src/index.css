@@ -10,12 +10,12 @@
   --color-primary-dark: #e85a5a;
 
   /* 背景色 */
-  --color-bg-gradient: linear-gradient(135deg, #fce38a 0%, #f38181 50%, #e85a5a 100%);
+  --color-bg-gradient: linear-gradient(135deg, #e85a5a 0%, #f38181 50%, #fce38a 100%);
   --color-bg-splash: aquamarine;
   --color-bg-demo: red;
 
   /* 间距 */
-  --spacing-page: 20px;
+  --spacing-page: 12px;
   --spacing-box: 16px;
 
   /* 圆角 */
