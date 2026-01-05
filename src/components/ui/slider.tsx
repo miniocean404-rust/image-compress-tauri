@@ -25,7 +25,7 @@ export const slider = tv({
       "absolute inset-0 w-full h-full",
       "opacity-0 cursor-pointer",
     ],
-    value: "text-sm font-medium text-white min-w-[3ch] text-right",
+    value: "text-sm font-medium text-white min-w-[4ch] text-right",
   },
 })
 
