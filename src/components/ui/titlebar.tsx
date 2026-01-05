@@ -1,4 +1,5 @@
 import { getCurrentWindow } from "@tauri-apps/api/window"
+import { platform } from "@tauri-apps/plugin-os"
 import { useState } from "react"
 
 interface TitleBarProps {
@@ -6,13 +7,15 @@ interface TitleBarProps {
   showTitle?: boolean
 }
 
-export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBarProps) {
+// Mac 风格标题栏
+function MacTitleBar({
+  title,
+  showTitle,
+  onMinimize,
+  onMaximize,
+  onClose,
+}: TitleBarProps & { onMinimize: () => void; onMaximize: () => void; onClose: () => void }) {
   const [isHovered, setIsHovered] = useState(false)
-  const appWindow = getCurrentWindow()
-
-  const handleMinimize = () => appWindow.minimize()
-  const handleMaximize = () => appWindow.toggleMaximize()
-  const handleClose = () => appWindow.close()
 
   return (
     <div
@@ -23,7 +26,7 @@ export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBar
       <div className='no-drag-region flex items-center gap-2 pl-3' onMouseEnter={() => setIsHovered(true)} onMouseLeave={() => setIsHovered(false)}>
         {/* 关闭按钮 - 红色 */}
         <button
-          onClick={handleClose}
+          onClick={onClose}
           className='group flex h-3 w-3 items-center justify-center rounded-full bg-[#ff5f57] transition-all hover:bg-[#ff5f57]/80'
           title='关闭'
         >
@@ -36,7 +39,7 @@ export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBar
 
         {/* 最小化按钮 - 黄色 */}
         <button
-          onClick={handleMinimize}
+          onClick={onMinimize}
           className='group flex h-3 w-3 items-center justify-center rounded-full bg-[#febc2e] transition-all hover:bg-[#febc2e]/80'
           title='最小化'
         >
@@ -49,7 +52,7 @@ export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBar
 
         {/* 最大化按钮 - 绿色 */}
         <button
-          onClick={handleMaximize}
+          onClick={onMaximize}
           className='group flex h-3 w-3 items-center justify-center rounded-full bg-[#28c840] transition-all hover:bg-[#28c840]/80'
           title='最大化'
         >
@@ -68,4 +71,63 @@ export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBar
       <div className='w-[60px]' />
     </div>
   )
+}
+
+// Windows 风格标题栏
+function WindowsTitleBar({
+  title,
+  showTitle,
+  onMinimize,
+  onMaximize,
+  onClose,
+}: TitleBarProps & { onMinimize: () => void; onMaximize: () => void; onClose: () => void }) {
+  return (
+    <div data-tauri-drag-region className='drag-region flex h-titlebar w-full items-center justify-between backdrop-blur-sm bg-white'>
+      {/* 左侧占位 */}
+      <div className='w-[12px]' />
+
+      {/* 标题 - 居中 */}
+      {showTitle && <span className='pointer-events-none absolute left-1/2 -translate-x-1/2 text-xs font-medium text-gray-600'>{title}</span>}
+
+      {/* Windows 风格控制按钮 - 右侧 */}
+      <div className='no-drag-region flex h-full items-center'>
+        {/* 最小化按钮 */}
+        <button onClick={onMinimize} className='flex h-full w-11.5 items-center justify-center transition-colors hover:bg-black/10' title='最小化'>
+          <svg className='h-2.5 w-2.5' viewBox='0 0 10 10' fill='none'>
+            <path d='M0 5H10' stroke='currentColor' strokeWidth='1' />
+          </svg>
+        </button>
+
+        {/* 最大化按钮 */}
+        <button onClick={onMaximize} className='flex h-full w-11.5 items-center justify-center transition-colors hover:bg-black/10' title='最大化'>
+          <svg className='h-2.5 w-2.5' viewBox='0 0 10 10' fill='none'>
+            <rect x='0.5' y='0.5' width='9' height='9' stroke='currentColor' strokeWidth='1' />
+          </svg>
+        </button>
+
+        {/* 关闭按钮 */}
+        <button onClick={onClose} className='flex h-full w-11.5 items-center justify-center transition-colors hover:bg-[#e81123] hover:text-white' title='关闭'>
+          <svg className='h-2.5 w-2.5' viewBox='0 0 10 10' fill='none'>
+            <path d='M0 0L10 10M10 0L0 10' stroke='currentColor' strokeWidth='1' />
+          </svg>
+        </button>
+      </div>
+    </div>
+  )
+}
+
+export function TitleBar({ title = "图片压缩", showTitle = false }: TitleBarProps) {
+  const appWindow = getCurrentWindow()
+  const currentPlatform = platform()
+
+  const handleMinimize = () => appWindow.minimize()
+  const handleMaximize = () => appWindow.toggleMaximize()
+  const handleClose = () => appWindow.close()
+
+  // macOS 使用 Mac 风格，其他系统使用 Windows 风格
+  if (currentPlatform === "macos") {
+    return <MacTitleBar title={title} showTitle={showTitle} onMinimize={handleMinimize} onMaximize={handleMaximize} onClose={handleClose} />
+  }
+
+  return <WindowsTitleBar title={title} showTitle={showTitle} onMinimize={handleMinimize} onMaximize={handleMaximize} onClose={handleClose} />
 }

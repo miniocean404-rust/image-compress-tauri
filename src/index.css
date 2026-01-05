@@ -110,7 +110,7 @@
     height: 100%;
     font-family: var(--font-family-base);
     scroll-behavior: smooth;
-    background: transparent;
+    background-color: white;
   }
 
   /* 火狐滚动条 */
