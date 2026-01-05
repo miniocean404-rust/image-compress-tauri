@@ -77,29 +77,14 @@
    全局基础样式
    ======================================== */
 @layer base {
-  *,
-  *::before,
-  *::after {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
-    -webkit-print-color-adjust: exact;
-    print-color-adjust: exact;
-    color-adjust: exact;
-  }
-
   html,
   body,
   #root {
-    -webkit-app-region: drag;
+    /* tauri 拖拽区域样式设置 */
+    /* -webkit-app-region: drag; */
     user-select: none;
-    overflow: auto;
     height: 100%;
     font-family: var(--font-family-base);
-    font-size: 16px;
-    line-height: 1.5;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
     scroll-behavior: smooth;
   }
 
@@ -113,68 +98,24 @@
     width: 0;
   }
 
-  img {
-    border: none;
+  .simplebar-scrollbar::before {
+    background-color: var(--color-scrollbar);
   }
 
-  img,
-  picture,
-  video,
-  canvas,
-  svg {
-    display: block;
-    max-width: 100%;
+  .simplebar-scrollbar.simplebar-visible:before {
+    opacity: 1;
   }
 
-  dl,
-  li,
-  menu,
-  ol,
-  ul {
-    list-style: none;
+  .simplebar-content-wrapper {
+    margin: 0 var(--spacing-page);
+    border-radius: var(--radius-box);
   }
 
-  button,
-  input,
-  select,
-  textarea {
-    font: inherit;
-    outline: none;
-  }
-
-  p,
-  h1,
-  h2,
-  h3,
-  h4,
-  h5,
-  h6 {
-    overflow-wrap: break-word;
-  }
-
-  a,
-  a:link,
-  a:visited,
-  a:hover,
-  a:active {
-    text-decoration: none;
-    hyphens: auto;
-  }
-
-  #root,
-  #__next {
-    isolation: isolate;
-  }
-
-  @page {
-    size: auto A4 landscape;
-    margin: 0cm 2cm;
+  .simplebar-content {
+    min-height: 100%;
   }
 }
 
-/* ========================================
-   工具类
-   ======================================== */
 @layer utilities {
   /* 清除浮动 */
   .clear {
@@ -301,31 +242,9 @@
   }
 }
 
-/* ========================================
-   SimpleBar 滚动条样式覆盖
-   ======================================== */
-.simplebar-scrollbar::before {
-  background-color: var(--color-scrollbar);
-}
-
-.simplebar-scrollbar.simplebar-visible:before {
-  opacity: 1;
-}
-
-.simplebar-content-wrapper {
-  margin: 0 var(--spacing-page);
-  border-radius: var(--radius-box);
-}
-
-.simplebar-content {
-  min-height: 100%;
-}
-
-/* ========================================
-   动画关键帧
-   ======================================== */
 @keyframes float {
-  0%, 100% {
+  0%,
+  100% {
     transform: translateY(0);
   }
   50% {
@@ -368,9 +287,6 @@
   }
 }
 
-/* ========================================
-   组件样式
-   ======================================== */
 @layer components {
   /* 拖放区域 */
   .dropzone {
