@@ -28,12 +28,7 @@
         "decorations": true,
         "userAgent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
       }
-    ],
-    "trayIcon": {
-      "iconPath": "icons/32x32.png",
-      "title": "图片压缩",
-      "iconAsTemplate": true
-    }
+    ]
   },
   "bundle": {
     "active": true,
